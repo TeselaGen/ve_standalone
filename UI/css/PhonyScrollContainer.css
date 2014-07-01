@@ -1,0 +1,135 @@
+
+
+.phony-scroll-container-wrapper {
+	flex-grow: 1;
+
+	display: flex;
+	flex-direction: row-reverse;
+	align-items: stretch;
+
+	overflow: hidden;
+}
+
+
+.phony-scroll-bar {
+	width: 15px;	
+	overflow: hidden;
+	background: #fbfbfb;
+}
+
+.phony-scroll-bar.mouse-over-container {
+	border-left-width: 1px;
+	border-left-style: solid;
+	border-left-color: #eeeeee;
+}
+
+
+.phony-scroll-scroller {
+	position: relative;
+
+	/*background: #eeeeee;*/
+	background: #ddd;
+	width: 100%;
+	min-height: 5px;
+
+	cursor: default;
+}
+
+.phony-scroll-scroller.mouse-over-container {
+	background: #999;
+}
+
+
+.phony-scroll-body {
+	width: 100%;
+	height: 100%;
+}
+
+
+div.phony-scroll-preview {
+	position: relative;
+	width: 110px;
+	/*width: 60px;*/
+	
+	overflow: hidden;
+	flex-grow: 0;
+	flex-shrink: 0;
+
+
+	-webkit-box-shadow: -5px 0px 7px -2px rgba(0, 0, 0, 0.05);
+	-moz-box-shadow:    -5px 0px 7px -2px rgba(0, 0, 0, 0.05);
+	box-shadow:         -5px 0px 7px -2px rgba(0, 0, 0, 0.05);
+
+}
+
+
+canvas.phony-scroll-preview {
+	position: absolute;
+	top: 0px;
+}
+
+
+
+div.phony-scroll-preview-scroller {
+	position: relative;
+	width: 100%;
+
+	/*height: 40px;*/
+
+	background: #5A5A5A;
+	opacity: 0.15;
+	/*background: #ddd;*/
+
+	border-radius: 1px;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

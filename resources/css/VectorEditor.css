@@ -1,0 +1,374 @@
+
+html {
+	height: 100%;
+}
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+
+
+textarea.clipboard-proxy-paste, textarea.clipboard-proxy-copy {
+	position: fixed;
+	/*height: 0px;*/
+	/*width: 0px;*/
+	top: -1000px;
+	left: -1000px;
+	overflow: hidden;
+}
+
+
+div.ve-panel-background {
+	flex-grow: 1;
+	flex-shrink: 1;
+	/*flex-basis: 100%;*/
+
+	display: flex;
+	flex-direction: column;
+
+
+	height: 100%;
+	width: 100%;
+
+	/*overflow: auto;*/
+
+	/*max-height: 100%;*/
+
+
+	/*margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;*/
+
+	/*padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;*/
+
+	/*border-width: 1px;
+	border-style: solid;
+	border-color: #CFCFCF;*/
+}
+
+/*div.ve-panel-background > div.ui-menu-bar {*/
+div.ve-main-menubar {
+	flex-grow: 0;
+	flex-shrink: 0;
+
+	/*flex-grow: 1;*/
+	/*flex-shrink: 1;*/
+	/*flex-basis: 25px;*/
+
+
+	/*height: 22px;*/
+	/*min-height: 25px;*/
+
+	/*flex-shrink: 1;*/
+	/*flex-basis: 100%;*/
+}
+
+
+
+
+
+div.ve-subpanel {
+	flex-grow: 1;
+	flex-shrink: 1;
+	/*flex-basis: 100%;*/
+
+	display: flex;
+	flex-direction: row;
+
+/*
+	height: 100%;
+	width: 100%;*/
+
+}
+
+
+
+
+div.ve-vector-panel.ui-background, div.ve-annotate-panel.ui-background {
+	flex-grow: 0.5;
+	flex-shrink: 1;
+	flex-basis: 50%;
+
+	display: flex;
+	flex-direction: column;
+
+	/*align-items: flex-start;*/
+	/*flex-wrap: nowrap;*/
+
+	/*height: 100%;
+	width: 100%;*/
+
+
+	border-width: 1px;
+	border-style: solid;
+	border-color: #CFCFCF;
+
+	margin-right: 2.5px;
+	margin-left: 2.5px;
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none; /* Webkit */
+	-moz-user-select: none;    /* Firefox */
+	-ms-user-select: none;     /* IE 10  */
+	/* Currently not supported in Opera but will be soon */
+	-o-user-select: none;
+	user-select: none;  
+}
+
+div.ve-vector-panel.ui-background:first-child, div.ve-annotate-panel.ui-background:first-child {
+	margin-left: 0px;
+}
+
+div.ve-vector-panel.ui-background:last-child, div.ve-annotate-panel.ui-background:last-child {
+	margin-right: 0px;
+}
+
+
+
+div.ve-vector-panel.ui-header, div.ve-annotate-panel.ui-header {
+	font-family: 'Maven Pro', sans-serif;
+
+	background: #CCCCCC;
+
+	font-weight: 600;
+	font-size: 12px;
+
+	padding-top: 5px;
+	padding-bottom: 3px;
+	padding-right: 5px;
+	padding-left: 10px;
+
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
+div.ve-vector-panel.ui-body, div.ve-annotate-panel.ui-body {
+	/*flex-grow: 0;*/
+	/*position: relative;*/
+	/*display: flex;
+	flex-direction: row;
+	flex-grow: 0.5;
+	flex-shrink: 1;
+	flex-basis: 50%;*/
+
+	/*max-height: 100%;*/
+
+	/*height: 100%;
+	width: 100%;*/
+	/*overflow: auto;*/
+
+
+	/*overflow: hidden;*/
+
+
+}
+div.ve-vector-panel.ui-body {
+	overflow: auto;
+}
+div.ve-annotate-panel.ui-body {
+	overflow: hidden;
+}
+
+
+div.ve-vector-panel.ui-body {
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+
+svg.pieSVG {
+	margin: 15px;
+}
+
+.pieNameBox {
+	font-family: 'Maven Pro', sans-serif;
+	font-weight: 500;
+}
+
+path.pieWireframe {
+	pointer-events: none;
+	stroke: #808080;
+	stroke-opacity: 0.8;
+	fill: none;
+}
+
+path.pieSelection {
+	pointer-events: none;
+	stroke: #CCCCCC;
+	stroke-opacity: 0.8;
+	fill: #0099FF;
+	fill-opacity: 0.3;
+}
+
+.pie-feature-label {
+	fill: #333234;
+	/*font-family: 'Maven Pro';*/
+	font-family: Ubuntu Mono;
+	dominant-baseline: central;
+	alignment-baseline: central;
+	pointer-events: none;
+}
+
+
+
+svg.railSVG {
+	margin-left: 100px;
+	margin-right: 100px;
+}
+
+.railNameBox {
+	font-family: 'Maven Pro', sans-serif;
+	font-weight: 500;
+}
+
+.railSelection {
+	/*pointer-events: none;*/
+	stroke: #CCCCCC;
+	stroke-opacity: 0.8;
+	fill: #0099FF;
+	fill-opacity: 0.3;
+}
+
+.railWireframe {
+	pointer-events: none;
+	stroke: #808080;
+	stroke-opacity: 0.8;
+	fill: none;
+}
+
+.railLabel {
+	pointer-events: none;
+}
+
+
+
+
+rect.annotateSelectionRect {
+	fill: #0099FF;
+	fill-opacity: 0.3;
+}
+
+
+line.annotateCaret {
+	stroke: #000000;
+	stroke-width: 2;
+	pointer-events: none;
+}
+
+
+
+g.sequenceSVG text {
+	font-family: Ubuntu Mono;
+	font-size: 12px;
+	letter-spacing: 3px;
+	pointer-events: none;
+}
+
+g.sequenceSVG .complementarySequenceSVG {
+	fill: #b0b0b0;
+}
+
+
+g.sequenceSVG .bpLabelSVG {
+	white-space: pre;
+}
+
+
+
+
+
+
+div.feature-inspector-window div.ui-window-body {
+
+	display: flex;
+	flex-direction: column;
+
+	font-size: 14px;
+	font-weight: 500;
+
+	padding: 15px;
+}
+
+div.feature-inspector-row {
+
+	display: flex;
+
+	flex-direction: row;
+
+	margin-top: 7px;
+	margin-bottom: 7px;
+
+}
+
+div.feature-inspector-row > *:first-child {
+	flex-grow: 0.3;
+}
+
+div.feature-inspector-row > *:last-child {
+	flex-grow: 0.7;
+	/*max-width: 275px;*/
+	max-width: 70%;
+}
+
+div.feature-inspector-window input:focus {
+	outline: none !important;
+}
+
+
+div.feature-inspector-window div.ui-radio-group {
+	display: flex;
+	flex-direction: row;
+	/*max-width: 70%;*/
+}
+
+div.feature-inspector-window div.ui-radio-button {
+	flex-grow: 1;
+}
+
+
+
+
+canvas.annotate-preview {
+	position: absolute;
+	top: 0px;
+	/*width: 100%;
+	height: 100%;*/
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

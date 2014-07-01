@@ -1,0 +1,78 @@
+
+
+
+div.ui-radio-button {
+	display: flex;
+	flex-direction: row;
+}
+ 
+
+svg.ui-radio-button {
+	width: 15px;
+	height: 15px;
+
+	margin-right: 5px;
+}
+
+circle.ui-radio-button-outline {
+	fill: none;
+	stroke: #BCBCBC;
+	stroke-width: 2px;
+}
+
+circle.ui-radio-button-center {
+	stroke: none;
+	fill: #3498db;
+}
+
+svg.ui-radio-button.selected > circle.ui-radio-button-center {
+
+}
+
+svg.ui-radio-button.unselected > circle.ui-radio-button-center {
+	opacity: 0;
+}
+
+
+div.ui-radio-button > span {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,126 @@
+
+div.ui-menu-bar {
+	float: top;
+	width: 100%;
+	min-height: 10px;
+	background: #FDFDFD;
+
+	font-family: 'Maven Pro', sans-serif;
+
+	/*padding-left: 10px;*/
+	/*margin-left: 10px;*/
+}
+
+
+div.ui-menu-bar-item {
+	cursor: pointer;
+
+	font-size: 12px;
+	font-weight: 500;
+
+	float: left;
+	min-height: 100%;
+	background: #FDFDFD;
+
+	/*border-width: 1px;
+	border-style: solid;
+	border-color: #CFCFCF;*/
+	border-radius: 3px;
+
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 10px;
+	padding-left: 10px;
+
+	margin-top: 2px;
+	margin-bottom: 2px;
+	margin-right: 0px;
+	margin-left: 0px;
+}
+
+
+div.ui-menu {
+	position: fixed;
+
+	font-family: 'Maven Pro', sans-serif;
+	font-size: 12px;
+	font-weight: 500;
+
+	background: #FAFAFA;
+
+	border-width: 1px;
+	border-style: solid;
+	border-color: #E0E3E6;
+}
+
+
+div.ui-menu-item {
+	cursor: pointer;
+
+	border-radius: 3px;
+
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 10px;
+	padding-left: 10px;
+
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-right: 3px;
+	margin-left: 3px;
+}
+
+div.ui-menu-item:first-child {
+	margin-top: 3px;
+}
+
+div.ui-menu-item:last-child {
+	margin-bottom: 3px;
+}
+
+
+input.ui-menu-item-filefield {
+	pointer-events: none;
+	position: absolute;
+	opacity: 0;
+	top: 0px;
+	right: 0px;
+	width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

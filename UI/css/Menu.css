@@ -1,0 +1,217 @@
+
+
+
+div.ui-menu {
+	position: fixed;
+
+	font-family: 'Maven Pro', sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+
+	background: #FAFAFA;
+
+	border-width: 1px;
+	border-style: solid;
+	border-color: #E0E3E6;
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	cursor: default;
+
+	/*padding-top: 1px;
+	padding-bottom: 1px;
+	padding-right: 1px;
+	padding-left: 1px;*/
+
+	box-shadow: 0 6px 12px rgba(0,0,0,0.175);
+}
+
+div.ui-hidden-menu {
+	display: none;
+}
+
+
+div.ui-menuseparator {
+	height: 1px;
+
+	margin-top: 5px;
+	margin-bottom: 5px;
+
+	background-color: #e5e5e5;
+}
+
+
+div.ui-menuitem {
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 15px;
+	padding-left: 25px;
+}
+
+div.ui-menuitem:first-child {
+	margin-top: 5px;
+}
+
+div.ui-menuitem:last-child {
+	margin-bottom: 5px;
+}
+
+div.ui-menuitem.ui-menuitem-mouseover {
+	color: #fff;
+	background-color: #3498db;
+}
+
+div.ui-menuitem.ui-menuitem-mouseover svg {
+	fill: #fff;
+}
+
+
+input.ui-filefield-menuitem {
+	pointer-events: none;
+	position: absolute;
+	opacity: 0;
+	/*top: 0px;*/
+	/*right: 0px;*/
+	/*width: 100%;*/
+	/*height: 100%;*/
+
+	/*margin: 0px;*/
+}
+
+
+div.ui-checkbox-menuitem {
+	padding-left: 0px;
+
+
+}
+
+svg.ui-checkbox-menuitem {
+	width: 12px;
+	height: 12px;
+
+	margin-left: 6.5px;
+	margin-right: 6.5px;
+
+	bottom: 0px;
+
+	fill: #404040;
+}
+
+svg.ui-checkbox-menuitem.checked {
+
+}
+
+svg.ui-checkbox-menuitem.unchecked {
+	opacity: 0;
+}
+
+
+
+
+div.ui-menubar {
+	/*float: top;*/
+
+	display: flex;
+	flex-direction: row;
+
+	font-family: 'Maven Pro', sans-serif;
+	font-size: 14px;
+	font-weight: 500;
+
+	background: #FDFDFD;
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	cursor: default;
+}
+
+
+div.ui-menubar-item {
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 10px;
+	padding-left: 10px;
+
+}
+
+div.ui-menubar-item-active {
+	color: #fff;
+	background-color: #3498db;
+}
+
+
+div.ui-menubar-menu {
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+
+
+
+div.ui-nested-menu {
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+
+
+div.ui-context-menu {
+	border-radius: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

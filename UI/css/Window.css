@@ -1,0 +1,194 @@
+
+
+
+div.ui-window {
+	position: fixed;
+
+	display: flex;
+	flex-direction: column;
+
+	font-family: 'Maven Pro', sans-serif;
+
+	background: #FAFAFA;
+
+	border-width: 1px;
+	border-style: solid;
+	border-color: #7b7b7b;
+	border-radius: 5px;
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	cursor: default;
+
+	/*box-shadow: 0 6px 12px rgba(0,0,0,0.175);*/
+	box-shadow: 0 12px 24px rgba(0,0,0,0.175);
+}
+
+div.ui-hidden-window {
+	display: none;
+}
+
+
+
+div.ui-window-header {
+	position: relative;
+
+	font-size: 14px;
+	font-weight: 500;
+
+	min-height: 25px;
+
+	/*color: #fff;*/
+	/*background-color: #e5e5e5;*/
+
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #696969;
+
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+
+	background: -webkit-linear-gradient(#e5e5e5, #b4b4b4);
+	background: -o-linear-gradient(#e5e5e5, #b4b4b4);
+	background: -moz-linear-gradient(#e5e5e5, #b4b4b4);
+	background: linear-gradient(#e5e5e5, #b4b4b4);
+
+
+	flex-grow: 0;
+	flex-shrink: 0;
+
+}
+
+div.ui-window-header > span {
+	position: absolute;
+	bottom: 3px;
+	left: 15px;
+}
+
+
+
+div.ui-window-body {
+	flex-grow: 1;
+
+}
+
+
+
+div.ui-window-footer {
+	flex-grow: 0;
+	flex-shrink: 0;
+
+	display: flex;
+	justify-content: flex-end;
+
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+
+	background: #ececec;
+
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #8a8a8a;
+}
+
+
+div.ui-window-footer-button {
+	
+	font-size: 14px;
+	font-weight: 500;
+
+	border-width: 1px;
+	border-style: solid;
+	border-color: #919191;
+	border-radius: 3px;
+	
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 7px;
+	padding-left: 7px;
+
+	margin-right: 5px;
+	margin-left: 5px;
+	/* ec -> f7*/
+
+	background: -webkit-linear-gradient(#ececec, #f7f7f7);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
