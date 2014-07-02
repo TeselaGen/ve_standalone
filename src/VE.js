@@ -174,6 +174,10 @@ includeScript('ot/features/FeatureModification.js');
 includeScript('adaptors/TeselagenAdaptor.js');
 
 
+includeScript('VectorEditor.js');
+
+
+
 
 VE.allScriptsAddedToQueue = true;
 

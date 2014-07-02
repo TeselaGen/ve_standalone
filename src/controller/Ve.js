@@ -22,6 +22,8 @@ VE.Ve = function() {
 		showCutSiteLabels: true,
 		showAlignmentLabels: true,
 		showMapCaret: true,
+		aminoAcidFrames: [],
+		aminoAcidRevComFrames: [],
 		
 		viewMode: 'pie', // 'pie', 'rail'
 
