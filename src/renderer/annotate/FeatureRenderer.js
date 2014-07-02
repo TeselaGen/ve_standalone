@@ -121,7 +121,8 @@ VE.annotate.FeatureRenderer = {
 					}
 
 					featSvg.attr('fill', this.colorByType(feat.get('type').toLowerCase()));
-
+					featSvg.attr('class', 'annotate-feature');
+					featSvg.property('__data__', feat);
 
 				} else {
 
@@ -136,6 +137,8 @@ VE.annotate.FeatureRenderer = {
 							featSvg = this.drawFeatureBackwardArrow(g, rowStartPx, featY, featWidth, featHeight);
 						}
 						featSvg.attr('fill', this.colorByType(feat.get('type').toLowerCase()));
+						featSvg.attr('class', 'annotate-feature');
+						featSvg.property('__data__', feat);
 
 					} else if(rowIndex === featEndRow) {
 						var featWidth = rowEndBp * CHAR_WIDTH;
@@ -147,6 +150,8 @@ VE.annotate.FeatureRenderer = {
 							featSvg = this.drawFeatureBackwardRect(g, sequenceX1, featY, featWidth, featHeight);
 						}
 						featSvg.attr('fill', this.colorByType(feat.get('type').toLowerCase()));
+						featSvg.attr('class', 'annotate-feature');
+						featSvg.property('__data__', feat);
 
 					} else if(rowIndex < featEndRow || rowIndex > featStartRow) {
 						var featWidth = charPerRow * CHAR_WIDTH;
@@ -158,8 +163,11 @@ VE.annotate.FeatureRenderer = {
 							featSvg = this.drawFeatureBackwardRect(g, sequenceX1, featY, featWidth, featHeight);
 						}
 						featSvg.attr('fill', this.colorByType(feat.get('type').toLowerCase()));
+						featSvg.attr('class', 'annotate-feature');
+						featSvg.property('__data__', feat);
 
 					}
+
 
 				}
 					

@@ -1103,7 +1103,130 @@ VE.AnnotateContainer = Backbone.View.extend({
 
 		this.on('scrollTo', this.onScrollTo);
 
+		$(this.featuresSVG.node())
+			// .on('click', 'path.pie-feature', {me: this}, this.onPieFeatureClicked)
+			.on('contextmenu', 'path.annotate-feature', {me: this}, this.onAnnotateFeatureContextMenu);
+
+		$(this.selectionLayerSVG.node())
+			.on('contextmenu', 'rect.annotateSelectionRect', {me: this}, this.onSelectionContextMenu);
+
+			
 	},
+
+
+
+	onSelectionContextMenu: function(evt) {
+		evt.preventDefault();
+		var me = evt.data.me;
+
+		var ve = me.ve;
+		var start = ve.selectionStartBp;
+		var end = ve.selectionEndBp;
+
+		var contextMenu = new Backbone.UI.menu.ContextMenu({
+			posX: evt.clientX,
+			posY: evt.clientY,
+			items: [
+				{
+					label: 'New Annotation',
+					on: {
+						click: function(evt) {
+							// console.log(evt);
+							var featureInspectionWindow = new VE.FeatureInspectionWindow({
+								title: 'New Annotation',
+								startBp: start,
+								endBp: end,
+								name: 'New Feature',
+							});
+							featureInspectionWindow.show();
+
+							featureInspectionWindow.on('ok-click', function() {
+								var feat = featureInspectionWindow.createModel();
+								var isValid = feat.validate(me.model);
+								if(isValid) {
+									var op = VE.EditingManager.generateAddFeatureOp(me.model, feat);
+									me.model.applyClientOperation(op);
+									me.ve.trigger(VE.EditingEvent.CLIENT_OPERATION, op);
+								}
+
+							});
+
+							contextMenu.remove();
+						},
+					},
+				},
+			],
+		});
+		contextMenu.show();
+	},
+
+
+
+
+	onAnnotateFeatureContextMenu: function(evt) {
+		evt.preventDefault();
+		evt.stopPropagation();
+
+		var me = evt.data.me;
+		var feat = this.__data__;
+
+		var start = feat.get('start');
+		var end = feat.get('end');
+
+		me.ve.trigger(VE.SelectionEvent.CHANGE_CARET_POSITION, end);
+		me.ve.trigger(VE.SelectionEvent.SELECT, start, end, false);
+
+		var contextMenu = new Backbone.UI.menu.ContextMenu({
+			posX: evt.clientX,
+			posY: evt.clientY,
+			items: [
+				{
+					label: 'Edit Annotation',
+					on: {
+						click: function(evt) {
+							// console.log(evt);
+							var featureInspectionWindow = new VE.FeatureInspectionWindow({
+								title: 'Edit Annotation',
+								startBp: start,
+								endBp: end,
+								name: feat.get('name'),
+								strand: feat.get('strand'),
+								type: feat.get('type'),
+							});
+							featureInspectionWindow.show();
+
+							featureInspectionWindow.on('ok-click', function() {
+								var newFeat = featureInspectionWindow.createModel();
+								var isValid = newFeat.validate(me.model);
+								if(isValid) {
+									var op = VE.EditingManager.generateEditFeatureOp(me.model, feat, newFeat);
+									me.model.applyClientOperation(op);
+									me.ve.trigger(VE.EditingEvent.CLIENT_OPERATION, op);
+								}
+
+							});
+
+							contextMenu.remove();
+						},
+					},
+				},
+				{
+					label: 'Delete Annotation',
+					on: {
+						click: function(evt) {
+							var op = VE.EditingManager.generateDeleteFeatureOp(me.model, feat);
+							me.model.applyClientOperation(op);
+							me.ve.trigger(VE.EditingEvent.CLIENT_OPERATION, op);
+
+							contextMenu.remove();
+						},
+					}
+				},
+			],
+		});
+		contextMenu.show();
+	},
+
 
 
 	onClientOperation: function(sequenceOperation) {
