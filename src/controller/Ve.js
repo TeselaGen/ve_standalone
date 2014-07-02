@@ -22,8 +22,11 @@ VE.Ve = function() {
 		showCutSiteLabels: true,
 		showAlignmentLabels: true,
 		showMapCaret: true,
+
 		aminoAcidFrames: [],
 		aminoAcidRevComFrames: [],
+		orfFrames: [],
+		orfRevComFrames: [],
 		
 		viewMode: 'pie', // 'pie', 'rail'
 
@@ -119,7 +122,7 @@ VE.Ve.prototype.onClientOperation = function(sequenceOperation) {
 };
 
 
-VE.Ve.prototype.onShowOrfsChanged = function(showOrfs) {
+VE.Ve.prototype.onShowOrfsChanged = function(showOrfs, orfFrames, orfRevComFrames) {
 	if(showOrfs && this.model.needsRecalc__orfs) {
 		this.model.calculateOrfs(this.options.orfMinimumLength);
 		this.model.needsRecalc__orfs = false;
