@@ -94,7 +94,8 @@ VE.RailContainer = Backbone.View.extend({
 			.attr("class", "railLabel");
 
 
-
+		this.orfFrames = this.orfFrames || [];
+		this.orfRevComFrames = this.orfRevComFrames || [];
 
 		this.buildAlignmentMaps();
 
@@ -612,9 +613,11 @@ VE.RailContainer = Backbone.View.extend({
 		this.fitWidthToContent();
 	},
 
-	onShowOrfsChanged: function(showOrfs) {
-		if(showOrfs === this.showOrfs) { return; }
+	onShowOrfsChanged: function(showOrfs, orfFrames, orfRevComFrames) {
+		// if(showOrfs === this.showOrfs) { return; }
 		this.showOrfs = showOrfs;
+		this.orfFrames = orfFrames;
+		this.orfRevComFrames = orfRevComFrames;
 		this.buildAlignmentMaps();
 		this.render();
 		this.fitWidthToContent();

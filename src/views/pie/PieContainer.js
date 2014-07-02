@@ -102,6 +102,9 @@ VE.PieContainer = Backbone.View.extend({
 			.attr("class", "pieLabel");
 
 
+		this.orfFrames = this.orfFrames || [];
+		this.orfRevComFrames = this.orfRevComFrames || [];
+
 		// this.recalculateCenter();
 
 		this.buildAlignmentMaps();
@@ -722,9 +725,11 @@ VE.PieContainer = Backbone.View.extend({
 		this.fitWidthToContent();
 	},
 
-	onShowOrfsChanged: function(showOrfs) {
-		if(showOrfs === this.showOrfs) { return; }
+	onShowOrfsChanged: function(showOrfs, orfFrames, orfRevComFrames) {
+		// if(showOrfs === this.showOrfs) { return; }
 		this.showOrfs = showOrfs;
+		this.orfFrames = orfFrames;
+		this.orfRevComFrames = orfRevComFrames;
 		this.buildAlignmentMaps();
 		this.render();
 		this.fitWidthToContent();

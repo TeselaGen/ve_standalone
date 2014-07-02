@@ -123,7 +123,8 @@ VE.AnnotateContainer = Backbone.View.extend({
 		
 		this.aminoAcidFrames = this.aminoAcidFrames || [];
 		this.aminoAcidRevComFrames = this.aminoAcidRevComFrames || [];
-
+		this.orfFrames = this.orfFrames || [];
+		this.orfRevComFrames = this.orfRevComFrames || [];
 
 		// this.scrollTop = 0;
 		// this.height = 0;
@@ -1103,9 +1104,11 @@ VE.AnnotateContainer = Backbone.View.extend({
 		this.render();
 	},
 
-	onShowOrfsChanged: function(showOrfs) {
-		if(showOrfs === this.showOrfs) { return; }
+	onShowOrfsChanged: function(showOrfs, orfFrames, orfRevComFrames) {
+		// if(showOrfs === this.showOrfs) { return; }
 		this.showOrfs = showOrfs;
+		this.orfFrames = orfFrames;
+		this.orfRevComFrames = orfRevComFrames;
 		this.calculateRows();
 		this.render();
 	},

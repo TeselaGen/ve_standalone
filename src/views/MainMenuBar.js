@@ -213,114 +213,208 @@ VE.MainMenuBar = Backbone.UI.menu.MenuBar.extend({
 						{
 							label: 'ORFs',
 							// checked: elements.ve.options.showOrfs,
-							on: {
-								click: function() {
-									console.error('TEM: change menu item type to nested menu item (see Ext.js VE)');
+							// on: {
+							// 	click: function() {
+							// 		console.error('TEM: change menu item type to nested menu item (see Ext.js VE)');
 									
-									me.ve.options.showOrfs = !me.ve.options.showOrfs;
-									me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs);
+							// 		me.ve.options.showOrfs = !me.ve.options.showOrfs;
+							// 		me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs);
 
+							// 	},
+							// },
+							items: [
+								{
+									label: 'All Frames',
+									type: 'checkbox',
+									checked: (elements.ve.options.showOrfs && elements.ve.options.orfFrames.length === 3) ? true : false,
+									on: {
+										change: function() {
+											if(this.checked) {
+												me.ve.options.orfFrames = [0, 1, 2];
+												me.ve.options.showOrfs = true;
+											} else {
+												me.ve.options.orfFrames = [];
+												// me.ve.options.showOrfs = false;
+												me.ve.options.showOrfs = (me.ve.options.orfRevComFrames.length > 0) ? true : false;
+											}
+
+											var items = this.menu.items;
+											for(var i=0,ii=items.length;i<ii;i++) {
+												items[i].setChecked(this.checked, true);
+											}
+
+											me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, me.ve.options.orfFrames, me.ve.options.orfRevComFrames);
+
+										},
+									},
 								},
-							},
-							// items: [
-							// 	{
-							// 		label: 'All Frames',
-							// 		type: 'checkbox',
-							// 		checked: (elements.ve.options.showOrfs && elements.ve.options.orfFrames.length === 3) ? true : false,
-							// 		on: {
-							// 			change: function() {
-							// 				if(this.checked) {
-							// 					me.ve.options.orfFrames = [0, 1, 2];
-							// 					me.ve.options.showOrfs = true;
-							// 				} else {
-							// 					me.ve.options.orfFrames = [];
-							// 					me.ve.options.showOrfs = false;
-							// 				}
-
-							// 				var items = this.menu.items;
-							// 				for(var i=0,ii=items.length;i<ii;i++) {
-							// 					items[i].setChecked(this.checked, true);
-							// 				}
-
-							// 				me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, me.ve.options.orfFrames, me.ve.options.orfRevComFrames);
-
-							// 			},
-							// 		},
-							// 	},
-							// 	{
-							// 		label: 'Frame 1',
-							// 		type: 'checkbox',
-							// 		checked: (elements.ve.options.showOrfs && elements.ve.options.orfFrames.indexOf(0) !== -1) ? true : false,
-							// 		on: {
-							// 			change: function() {
-							// 				var _0 = (me.ve.options.orfFrames.indexOf(0) === -1) ? false : true;
-							// 				var _1 = (me.ve.options.orfFrames.indexOf(1) === -1) ? false : true;
-							// 				var _2 = (me.ve.options.orfFrames.indexOf(2) === -1) ? false : true;
-							// 				var orfFrames = [];
-							// 				if(this.checked) orfFrames.push(0);
-							// 				if(_1) orfFrames.push(1);
-							// 				if(_2) orfFrames.push(2);
-							// 				me.ve.options.orfFrames = orfFrames;
-							// 				me.ve.options.showOrfs = (orfFrames.length > 0);
+								{
+									label: 'Frame 1',
+									type: 'checkbox',
+									checked: (elements.ve.options.showOrfs && elements.ve.options.orfFrames.indexOf(0) !== -1) ? true : false,
+									on: {
+										change: function() {
+											var _0 = (me.ve.options.orfFrames.indexOf(0) === -1) ? false : true;
+											var _1 = (me.ve.options.orfFrames.indexOf(1) === -1) ? false : true;
+											var _2 = (me.ve.options.orfFrames.indexOf(2) === -1) ? false : true;
+											var orfFrames = [];
+											if(this.checked) orfFrames.push(0);
+											if(_1) orfFrames.push(1);
+											if(_2) orfFrames.push(2);
+											me.ve.options.orfFrames = orfFrames;
+											// me.ve.options.showOrfs = (orfFrames.length > 0);
+											me.ve.options.showOrfs = (orfFrames.length > 0 || me.ve.options.orfRevComFrames.length > 0);
 										
-							// 				me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, orfFrames, me.ve.options.orfRevComFrames);
-							// 			},
-							// 		},
-							// 	},
-							// 	{
-							// 		label: 'Frame 2',
-							// 		type: 'checkbox',
-							// 		checked: (elements.ve.options.showOrfs && elements.ve.options.orfFrames.indexOf(1) !== -1) ? true : false,
-							// 		on: {
-							// 			change: function() {
-							// 				var _0 = (me.ve.options.orfFrames.indexOf(0) === -1) ? false : true;
-							// 				var _1 = (me.ve.options.orfFrames.indexOf(1) === -1) ? false : true;
-							// 				var _2 = (me.ve.options.orfFrames.indexOf(2) === -1) ? false : true;
-							// 				var orfFrames = [];
-							// 				if(_0) orfFrames.push(0);
-							// 				if(this.checked) orfFrames.push(1);
-							// 				if(_2) orfFrames.push(2);
-							// 				me.ve.options.orfFrames = orfFrames;
-							// 				me.ve.options.showOrfs = (orfFrames.length > 0);
+											me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, orfFrames, me.ve.options.orfRevComFrames);
+										},
+									},
+								},
+								{
+									label: 'Frame 2',
+									type: 'checkbox',
+									checked: (elements.ve.options.showOrfs && elements.ve.options.orfFrames.indexOf(1) !== -1) ? true : false,
+									on: {
+										change: function() {
+											var _0 = (me.ve.options.orfFrames.indexOf(0) === -1) ? false : true;
+											var _1 = (me.ve.options.orfFrames.indexOf(1) === -1) ? false : true;
+											var _2 = (me.ve.options.orfFrames.indexOf(2) === -1) ? false : true;
+											var orfFrames = [];
+											if(_0) orfFrames.push(0);
+											if(this.checked) orfFrames.push(1);
+											if(_2) orfFrames.push(2);
+											me.ve.options.orfFrames = orfFrames;
+											// me.ve.options.showOrfs = (orfFrames.length > 0);
+											me.ve.options.showOrfs = (orfFrames.length > 0 || me.ve.options.orfRevComFrames.length > 0);
 										
-							// 				me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, orfFrames, me.ve.options.orfRevComFrames);
-							// 			},
-							// 		},
-							// 	},
-							// 	{
-							// 		label: 'Frame 3',
-							// 		type: 'checkbox',
-							// 		checked: (elements.ve.options.showOrfs && elements.ve.options.orfFrames.indexOf(2) !== -1) ? true : false,
-							// 		on: {
-							// 			change: function() {
-							// 				var _0 = (me.ve.options.orfFrames.indexOf(0) === -1) ? false : true;
-							// 				var _1 = (me.ve.options.orfFrames.indexOf(1) === -1) ? false : true;
-							// 				var _2 = (me.ve.options.orfFrames.indexOf(2) === -1) ? false : true;
-							// 				var orfFrames = [];
-							// 				if(_0) orfFrames.push(0);
-							// 				if(_1) orfFrames.push(1);
-							// 				if(this.checked) orfFrames.push(2);
-							// 				me.ve.options.orfFrames = orfFrames;
-							// 				me.ve.options.showOrfs = (orfFrames.length > 0);
+											me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, orfFrames, me.ve.options.orfRevComFrames);
+										},
+									},
+								},
+								{
+									label: 'Frame 3',
+									type: 'checkbox',
+									checked: (elements.ve.options.showOrfs && elements.ve.options.orfFrames.indexOf(2) !== -1) ? true : false,
+									on: {
+										change: function() {
+											var _0 = (me.ve.options.orfFrames.indexOf(0) === -1) ? false : true;
+											var _1 = (me.ve.options.orfFrames.indexOf(1) === -1) ? false : true;
+											var _2 = (me.ve.options.orfFrames.indexOf(2) === -1) ? false : true;
+											var orfFrames = [];
+											if(_0) orfFrames.push(0);
+											if(_1) orfFrames.push(1);
+											if(this.checked) orfFrames.push(2);
+											me.ve.options.orfFrames = orfFrames;
+											// me.ve.options.showOrfs = (orfFrames.length > 0);
+											me.ve.options.showOrfs = (orfFrames.length > 0 || me.ve.options.orfRevComFrames.length > 0);
 										
-							// 				me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, orfFrames, me.ve.options.orfRevComFrames);
-							// 			},
-							// 		},
-							// 	},
-							// ],
+											me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, orfFrames, me.ve.options.orfRevComFrames);
+										},
+									},
+								},
+							],
 						},
 						{
 							label: 'Revcom ORFs',
 							// checked: elements.ve.options.showOrfs,
-							on: {
-								click: function() {
-									console.error('TEM: change menu item type to nested menu item (see Ext.js VE)');
+							// on: {
+							// 	click: function() {
+							// 		console.error('TEM: change menu item type to nested menu item (see Ext.js VE)');
 									
-									me.ve.options.showOrfs = !me.ve.options.showOrfs;
-									me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs);
+							// 		me.ve.options.showOrfs = !me.ve.options.showOrfs;
+							// 		me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs);
 
+							// 	},
+							// },
+							items: [
+								{
+									label: 'All Frames',
+									type: 'checkbox',
+									checked: (elements.ve.options.showOrfs && elements.ve.options.orfRevComFrames.length === 3) ? true : false,
+									on: {
+										change: function() {
+											if(this.checked) {
+												me.ve.options.orfRevComFrames = [0, 1, 2];
+												me.ve.options.showOrfs = true;
+											} else {
+												me.ve.options.orfRevComFrames = [];
+												// me.ve.options.showOrfs = false;
+												me.ve.options.showOrfs = (me.ve.options.orfFrames.length > 0) ? true : false;
+											}
+
+											var items = this.menu.items;
+											for(var i=0,ii=items.length;i<ii;i++) {
+												items[i].setChecked(this.checked, true);
+											}
+
+											me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, me.ve.options.orfFrames, me.ve.options.orfRevComFrames);
+
+										},
+									},
 								},
-							}
+								{
+									label: 'Frame 1',
+									type: 'checkbox',
+									checked: (elements.ve.options.showOrfs && elements.ve.options.orfRevComFrames.indexOf(0) !== -1) ? true : false,
+									on: {
+										change: function() {
+											var _0 = (me.ve.options.orfRevComFrames.indexOf(0) === -1) ? false : true;
+											var _1 = (me.ve.options.orfRevComFrames.indexOf(1) === -1) ? false : true;
+											var _2 = (me.ve.options.orfRevComFrames.indexOf(2) === -1) ? false : true;
+											var orfRevComFrames = [];
+											if(this.checked) orfRevComFrames.push(0);
+											if(_1) orfRevComFrames.push(1);
+											if(_2) orfRevComFrames.push(2);
+											me.ve.options.orfRevComFrames = orfRevComFrames;
+											// me.ve.options.showOrfs = (orfRevComFrames.length > 0);
+											me.ve.options.showOrfs = (orfRevComFrames.length > 0 || me.ve.options.orfFrames.length > 0);
+										
+											me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, me.ve.options.orfFrames, me.ve.options.orfRevComFrames);
+										},
+									},
+								},
+								{
+									label: 'Frame 2',
+									type: 'checkbox',
+									checked: (elements.ve.options.showOrfs && elements.ve.options.orfRevComFrames.indexOf(1) !== -1) ? true : false,
+									on: {
+										change: function() {
+											var _0 = (me.ve.options.orfRevComFrames.indexOf(0) === -1) ? false : true;
+											var _1 = (me.ve.options.orfRevComFrames.indexOf(1) === -1) ? false : true;
+											var _2 = (me.ve.options.orfRevComFrames.indexOf(2) === -1) ? false : true;
+											var orfRevComFrames = [];
+											if(_0) orfRevComFrames.push(0);
+											if(this.checked) orfRevComFrames.push(1);
+											if(_2) orfRevComFrames.push(2);
+											me.ve.options.orfRevComFrames = orfRevComFrames;
+											// me.ve.options.showOrfs = (orfRevComFrames.length > 0);
+											me.ve.options.showOrfs = (orfRevComFrames.length > 0 || me.ve.options.orfFrames.length > 0);
+										
+											me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, me.ve.options.orfFrames, me.ve.options.orfRevComFrames);
+										},
+									},
+								},
+								{
+									label: 'Frame 3',
+									type: 'checkbox',
+									checked: (elements.ve.options.showOrfs && elements.ve.options.orfRevComFrames.indexOf(2) !== -1) ? true : false,
+									on: {
+										change: function() {
+											var _0 = (me.ve.options.orfRevComFrames.indexOf(0) === -1) ? false : true;
+											var _1 = (me.ve.options.orfRevComFrames.indexOf(1) === -1) ? false : true;
+											var _2 = (me.ve.options.orfRevComFrames.indexOf(2) === -1) ? false : true;
+											var orfRevComFrames = [];
+											if(_0) orfRevComFrames.push(0);
+											if(_1) orfRevComFrames.push(1);
+											if(this.checked) orfRevComFrames.push(2);
+											me.ve.options.orfRevComFrames = orfRevComFrames;
+											// me.ve.options.showOrfs = (orfRevComFrames.length > 0);
+											me.ve.options.showOrfs = (orfRevComFrames.length > 0 || me.ve.options.orfFrames.length > 0);
+										
+											me.ve.trigger(VE.VisibilityEvent.SHOW_ORFS_CHANGED, me.ve.options.showOrfs, me.ve.options.orfFrames, me.ve.options.orfRevComFrames);
+										},
+									},
+								},
+							],
 						},
 						{
 							type: 'menuseparator',

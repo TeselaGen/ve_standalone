@@ -123,8 +123,9 @@ VE.Ve.prototype.onClientOperation = function(sequenceOperation) {
 
 
 VE.Ve.prototype.onShowOrfsChanged = function(showOrfs, orfFrames, orfRevComFrames) {
-	if(showOrfs && this.model.needsRecalc__orfs) {
-		this.model.calculateOrfs(this.options.orfMinimumLength);
+	// if(showOrfs && this.model.needsRecalc__orfs) {
+	if(showOrfs) {
+		this.model.calculateOrfs(this.options.orfMinimumLength, orfFrames, orfRevComFrames);
 		this.model.needsRecalc__orfs = false;
 	}
 };
