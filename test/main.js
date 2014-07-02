@@ -132,50 +132,67 @@ function fn() {
 
 
 
-	// function getSequenceFromFile(sequenceFileName, cb) {
-	// 	$.ajax({
-	// 		type: "GET",
-	// 		url: '/GET_SEQUENCE_FILE/' + sequenceFileName,
-	// 		success: function(data) {
-	// 			// console.log(data);
-	// 			window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
-	// 			var errorHandler = null;
+	function getSequenceFromFile(sequenceFileName, cb) {
+		$.ajax({
+			type: "GET",
+			url: '/GET_SEQUENCE_FILE/' + sequenceFileName,
+			success: function(data) {
+				// console.log(data);
+				window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem;
+				var errorHandler = null;
 
-	// 			requestFileSystem(TEMPORARY, 1024*1024, function(fs) {
-					
-	// 				fs.root.getFile(sequenceFileName, {create: true}, function(fileEntry) {
+				requestFileSystem(TEMPORARY, 1024*1024, function(fs) {
+					var fileName = 'dsjfjlsdaflasdlk.gb';
+					fs.root.getFile(fileName, {create: true}, function(fileEntry) {
+						
+						// Create a FileWriter object for our FileEntry (log.txt).
+						fileEntry.createWriter(function(fileWriter) {
 
-	// 					// Create a FileWriter object for our FileEntry (log.txt).
-	// 					fileEntry.createWriter(function(fileWriter) {
+							fileWriter.onwriteend = function(e) {
+								// console.log('Write completed.');
 
-	// 						fileWriter.onwriteend = function(e) {
-	// 							// console.log('Write completed.');
+								fileEntry.file(function(file) {
+									// console.log('data');
+									vectorEditor.ve.trigger(VE.IoEvent.PARSE_SEQUENCE_FROM_FILE, file, function(sequence) {
+										return cb(sequence);
+									});
+								});
+							};
 
-	// 							fileEntry.file(function(file) {
-	// 								_ve.trigger(VE.IoEvent.PARSE_SEQUENCE_FROM_FILE, file, function(sequence) {
-	// 									return cb(sequence);
-	// 								});
-	// 							});
-	// 						};
+							fileWriter.onerror = function(e) {
+								console.log('Write failed: ' + e.toString());
+							};
 
-	// 						fileWriter.onerror = function(e) {
-	// 							console.log('Write failed: ' + e.toString());
-	// 						};
+							// Create a new Blob and write it to log.txt.
+							// var blob = new Blob(['Lorem Ipsum'], {type: 'text/plain'});
+							var blob = new Blob([data]);
+							fileWriter.write(blob);
 
-	// 						// Create a new Blob and write it to log.txt.
-	// 						// var blob = new Blob(['Lorem Ipsum'], {type: 'text/plain'});
-	// 						var blob = new Blob([data]);
-	// 						fileWriter.write(blob);
+						}, errorHandler);
 
-	// 					}, errorHandler);
+					}, errorHandler);
 
-	// 				}, errorHandler);
+				}, errorHandler);
 
-	// 			}, errorHandler);
+			}
+		});
+	}
 
-	// 		}
-	// 	});
-	// }
+	// var sequenceFileName = 'NT_187300.gb';
+	// var sequenceFileName = 'hs_ref_GRCh38_chr21_39.gb';
+
+	// var sequenceFileName = 'hs_ref_GRCh38_chr21/hs_ref_GRCh38_chr21_34.gb';
+	// getSequenceFromFile(sequenceFileName, function(openSequence) {
+	// 	// console.log(openSequence)
+	// 	window.sequence = openSequence;
+	// 	// sequence.calculateOrfs(300);
+	// 	vectorEditor.ve.trigger(VE.Event.NEW_SEQUENCE_OPENED, openSequence);
+	// });
+
+
+
+
+
 
 
 

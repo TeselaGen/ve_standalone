@@ -52,7 +52,7 @@ VE.Sequence = Backbone.Model.extend({
 		if(!minimumLength && minimumLength !== 0) {
 			minimumLength = -1;
 		}
-
+		
 		var _orfs = [];
 
 		// var sequence = Bio.Translator.stringToNCBI4na(this.get('sequence'));
@@ -69,6 +69,7 @@ VE.Sequence = Backbone.Model.extend({
 				}
 			}
 		}
+
 
 		calcOrfs(forwardFrames, 1);
 		calcOrfs(reverseFrames, -1);

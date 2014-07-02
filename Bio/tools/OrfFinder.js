@@ -115,45 +115,115 @@ Bio.OrfFinder = {
 		}
 	},
 
-	calculateOrfsInForwardFrame_4na: function(sequence, frame, isCircular, minimumLength) {	
+	// calculateOrfsInForwardFrame_4na: function(sequence, frame, isCircular, minimumLength) {	
+	// 	// console.time('b')
+
+	// 	// Start codons will be represented by a number greater than or equal to 0.
+	// 	// Stop codons will be represented by a number less than 0.
+	// 	var codons = [];
+
+	// 	var Translator = Bio.Translator;
+	// 	for(var i=frame, ii=sequence.length;i<ii;i+=3) {
+	// 		var codon = (sequence[i]) | (sequence[i+1] << 4) | (sequence[i+2] << 8);
+			
+	// 		if(Translator.isStartCodon_4na(codon)) {
+	// 		// if(codon === 1153) {
+	// 			codons.push(i);
+	// 		} else if(Translator.isPossibleStopCodon_4na(codon)) {
+	// 			codons.push(-(i+3));
+	// 		}
+	// 	}
+
+	// 	// console.timeEnd('b')
+
+	// 	return codonIndicesToOrfs(codons, frame, 1, isCircular, minimumLength);
+	// },
+
+	// For a sequence of length 1134211:
+	// ~ 72.162ms
+	// ~ 57.893ms - inlined codon testing
+	// ~ 48.843ms - changed to `codons[j++]` rather than `codons.push`
+	// ~ 15.932ms - changed `for` loop to `i+2<ii` from `i<ii`
+	calculateOrfsInForwardFrame_4na: function(sequence, frame, isCircular, minimumLength) {
 		// Start codons will be represented by a number greater than or equal to 0.
 		// Stop codons will be represented by a number less than 0.
 		var codons = [];
 
-		var Translator = Bio.Translator;
-		for(var i=frame, ii=sequence.length;i<ii;i+=3) {
-			var codon = (sequence[i]) | (sequence[i+1] << 4) | (sequence[i+2] << 8);
-			
-			if(Translator.isStartCodon_4na(codon)) {
-			// if(codon === 1153) {
-				codons.push(i);
-			} else if(Translator.isPossibleStopCodon_4na(codon)) {
-				codons.push(-(i+3));
+		// vvv INCORRECT vvv
+		// var j = 0;
+		// for(var i=frame, ii=sequence.length;i+2<ii;i+=3) {
+		// 	var codon = (sequence[i]) | (sequence[i+1] << 4) | (sequence[i+2] << 8);
+		// 	if(codon === 1153) { // Bio.Translator.isStartCodon_4na(codon) => inlined
+		// 		codons[j++] = i;
+		// 	} else if((280&codon)||(1048&codon)||(328&codon)) { // Bio.Translator.isPossibleStopCodon_4na(codon) => inlined
+		// 		codons[j++] = -(i+3);
+		// 	}
+		// }
+
+		// console.time('a')
+
+		var j = 0;
+		for(var i=frame, ii=sequence.length;i+2<ii;i+=3) {
+			var n0 = sequence[i], n1 = sequence[i+1], n2 = sequence[i+2];
+			var codon = (n0) | (n1 << 4) | (n2 << 8);
+
+			if(codon === 1153) { // Bio.Translator.isStartCodon_4na(codon) => inlined
+				codons[j++] = i;
+			} else if(((n0&8)&&(n1&1)&&(n2&1))||((n0&8)&&(n1&1)&&(n2&4))||((n0&8)&&(n1&4)&&(n2&1))) { // Bio.Translator.isPossibleStopCodon_4na(codon) => inlined
+				codons[j++] = -(i+3);
 			}
+
 		}
 		
+		// console.log(j);
+		// console.timeEnd('a');
+
+
 		return codonIndicesToOrfs(codons, frame, 1, isCircular, minimumLength);
 	},
+
+
 
 	calculateOrfsInReverseFrame_4na: function(sequence, frame, isCircular, minimumLength) {	
 		// Start codons will be represented by a number greater than or equal to 0.
 		// Stop codons will be represented by a number less than 0.
 		var codons = [];
 
-		var Translator = Bio.Translator;
-		for(var i=sequence.length-1-frame;i>1;i-=3) {
-			var codon = (Translator.complement_4na(sequence[i])) |
-						(Translator.complement_4na(sequence[i-1]) << 4) |
-						(Translator.complement_4na(sequence[i-2]) << 8);
+		// console.time('a')
 
-			if(Translator.isStartCodon_4na(codon)) {
-			// if(codon === 1153) {
-				codons.push(i+1);
-			} else if(Translator.isPossibleStopCodon_4na(codon)) {
-				codons.push(-(i-2));
+		// vvv INCORRECT vvv
+		// var Translator = Bio.Translator;
+		// for(var i=sequence.length-1-frame;i>1;i-=3) {
+		// 	var codon = (Translator.complement_4na(sequence[i])) |
+		// 				(Translator.complement_4na(sequence[i-1]) << 4) |
+		// 				(Translator.complement_4na(sequence[i-2]) << 8);
+
+		// 	if(Translator.isStartCodon_4na(codon)) {
+		// 	// if(codon === 1153) {
+		// 		codons.push(i+1);
+		// 	} else if(Translator.isPossibleStopCodon_4na(codon)) {
+		// 		codons.push(-(i-2));
+		// 	}
+		// }
+
+
+		var Translator = Bio.Translator;
+		var j = 0;
+		for(var i=sequence.length-1-frame;i>1;i-=3) {
+
+			var n0 = Translator.complement_4na(sequence[i]),
+				n1 = Translator.complement_4na(sequence[i-1]),
+				n2 = Translator.complement_4na(sequence[i-2]);
+
+			var codon = (n0) | (n1 << 4) | (n2 << 8);
+
+			if(codon === 1153) { // Bio.Translator.isStartCodon_4na(codon) => inlined
+				codons[j++] = i+1;
+			} else if(((n0&8)&&(n1&1)&&(n2&1))||((n0&8)&&(n1&1)&&(n2&4))||((n0&8)&&(n1&4)&&(n2&1))) { // Bio.Translator.isPossibleStopCodon_4na(codon) => inlined
+				codons[j++] = -(i-2);
 			}
 		}
-		
+
 		return codonIndicesToOrfs(codons, frame, -1, isCircular, minimumLength);
 	},
 
@@ -163,6 +233,8 @@ Bio.OrfFinder = {
 
 		var sequence = Bio.Translator.stringToNCBI4na(annotateContainer.model.get('sequence'));
 		var isCircular = annotateContainer.model.get('circular');
+		// var sequence = window.sequence.get('sequence');
+		var isCircular = false;
 		var minLen = -1;
 
 		var ff0 = this.calculateOrfsInForwardFrame_4na(sequence, 0, isCircular, minLen);

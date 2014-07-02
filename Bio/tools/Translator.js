@@ -178,16 +178,58 @@ Bio.Translator = {
 	 * @param  {String or Array} codon A codon in NCBI4na encoding.
 	 * @return {Boolean} True if the codon forms a stop codon.
 	 */
-	isPossibleStopCodon_4na: function(codon4na) {
+	 // INCORRECT
+	// isPossibleStopCodon_4na: function(codon4na) {
+	// 	var stopCodons = this.stopCodons;
+	// 	for(var stop in stopCodons) {
+	// 		var stop4na = stopCodons[stop].NCBI4na;
+	// 		if((stop4na & codon4na) === stop4na) {
+	// 			return true;
+	// 		}
+	// 	}
+	// 	return false;
+	// },
+
+
+	// __$COMPILE$__isPossibleStopCodon_4na: function(codonVarName) {
+	// 	codonVarName = codonVarName || 'codon4na';
+	// 	var str = '';
+	// 	var a = [];
+	// 	var stopCodons = this.stopCodons;
+	// 	for(var stop in stopCodons) {
+	// 		var stop4na = stopCodons[stop].NCBI4na;
+	// 		a.push('('+stop4na+'&'+codonVarName+')');
+	// 	}
+	// 	a =a.join('||');
+	// 	str += '(' + a + ')';
+	// 	console.log(str)
+	// },
+
+
+	__$COMPILE$__isPossibleStopCodon_4na: function(n0VarName, n1VarName, n2VarName, indexVarName) {
+		var strToNCBI4naMap = Bio.DnaAlphabet.strToNCBI4naMap;
+		n0VarName = n0VarName || 'n0';
+		n1VarName = n1VarName || 'n1';
+		n2VarName = n2VarName || 'n2';
+		indexVarName = indexVarName || 'i';
+		var str = '';
+		var a = [];
 		var stopCodons = this.stopCodons;
 		for(var stop in stopCodons) {
-			var stop4na = stopCodons[stop].NCBI4na;
-			if((stop4na & codon4na) === stop4na) {
-				return true;
-			}
+			var n0 = strToNCBI4naMap[stop[0]];
+			var n1 = strToNCBI4naMap[stop[1]];
+			var n2 = strToNCBI4naMap[stop[2]];
+
+
+
+			a.push('(('+n0VarName+'&'+n0+')&&' + '('+n1VarName+'&'+n1+')&&' + '('+n2VarName+'&'+n2+'))');
 		}
-		return false;
-	}, 
+		a =a.join('||');
+		str += '(' + a + ')';
+		console.log(str)
+	},
+
+
 
 	isStartCodonString: function(codonStr) {
 		return codonStr === "atg";
