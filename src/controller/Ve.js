@@ -74,8 +74,9 @@ VE.Ve.prototype.addListeners = function() {
 	this.on(VE.SelectionEvent.CHANGE_CARET_POSITION, this.onChangeCaretPosition, this);
 	this.on(VE.SelectionEvent.SELECT, this.onSelect, this);
 	this.on(VE.SelectionEvent.DESELECT, this.onDeselect, this);
-
+	
 	this.on(VE.Event.NEW_SEQUENCE_OPENED, this.onNewSequenceOpened, this);
+	this.on(VE.Event.BLANK_NEW_SEQUENCE, this.onBlankNewSequence, this);
 
 	this.on(VE.EditingEvent.CLIENT_OPERATION, this.onClientOperation, this);
 	this.on(VE.EditingEvent.PASTE, this.onPaste, this);
@@ -99,6 +100,13 @@ VE.Ve.prototype.addListeners = function() {
 };
 
 
+
+
+
+VE.Ve.prototype.onBlankNewSequence = function() {
+	var sequence = new VE.Sequence();
+	this.trigger(VE.Event.NEW_SEQUENCE_OPENED, sequence);
+};
 
 
 
@@ -454,7 +462,7 @@ VE.Ve.prototype.pasteFromClipboard = function() {
 		if(document.activeElement === textarea[0]) {
 			oldFocus.focus();
 		}
-	}, 0);
+	}, 50);
 };
 
 
@@ -520,7 +528,7 @@ VE.Ve.prototype.copySelectionToClipboard = function() {
 			if(document.activeElement === textarea[0]) {
 				oldFocus.focus();
 			}
-		}, 0);
+		}, 50);
 	}
 
 };

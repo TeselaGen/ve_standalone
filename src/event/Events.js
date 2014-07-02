@@ -38,6 +38,7 @@ var eventsObj = {
 
 	Event: {
 		NEW_SEQUENCE_OPENED: "VE::Event::NEW_SEQUENCE_OPENED", // sequenceModel
+		BLANK_NEW_SEQUENCE: "VE::Event::BLANK_NEW_SEQUENCE",
 	},
 
 	PieEvent: {

@@ -183,10 +183,24 @@ function fn() {
 		});
 	}
 
+	function openSequenceFromFile(sequenceFileName, cb) {
+		getSequenceFromFile(sequenceFileName, function(openSequence) {
+			window.sequence = openSequence;
+			vectorEditor.ve.trigger(VE.Event.NEW_SEQUENCE_OPENED, openSequence);
+			if(typeof cb === 'function') {
+				cb(openSequence);
+			}
+		});
+	}
+
 	// var sequenceFileName = 'NT_187300.gb';
 	// var sequenceFileName = 'hs_ref_GRCh38_chr21_39.gb';
 
 	// var sequenceFileName = 'hs_ref_GRCh38_chr21/hs_ref_GRCh38_chr21_34.gb';
+
+	// openSequenceFromFile('hs_ref_GRCh38_chr21/hs_ref_GRCh38_chr21_39.gb')
+
+
 	// getSequenceFromFile(sequenceFileName, function(openSequence) {
 	// 	// console.log(openSequence)
 	// 	window.sequence = openSequence;

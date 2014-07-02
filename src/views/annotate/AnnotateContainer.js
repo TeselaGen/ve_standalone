@@ -163,8 +163,9 @@ VE.AnnotateContainer = Backbone.View.extend({
 			
 		}
 
-		var svgHeight = this.rows[this.rows.length-1].y+this.rows[this.rows.length-1].height;
-		svgHeight += this.BOTTOM_PADDING;
+		// var svgHeight = this.rows[this.rows.length-1].y+this.rows[this.rows.length-1].height;
+		// svgHeight += this.BOTTOM_PADDING;
+		var svgHeight = this.calculateSvgHeight();
 		this.phonyScrollContainer.setPhonyHeight(svgHeight);
 
 		// debugger;
@@ -417,7 +418,19 @@ VE.AnnotateContainer = Backbone.View.extend({
 			return rowHeight;
 		}
 
-
+		if(newRows.length === 0) {
+			newRows[0] = {
+				height: null,
+				y: null, // position at top of row
+				
+				// these are arrays of indices
+				features: [],
+				alignments: [],
+				orfs: [],
+				cutSites: [],
+			};
+		}
+		
 		newRows[0].y = 0;
 		newRows[0].height = calculateHeight(newRows[0]);
 		for(var i=1;i<n_rows;i++) {
@@ -454,8 +467,9 @@ VE.AnnotateContainer = Backbone.View.extend({
 
 		// this.annotateSVG.attr("height", this.rows[this.rows.length-1].y+this.rows[this.rows.length-1].height);
 
-		var svgHeight = this.rows[this.rows.length-1].y+this.rows[this.rows.length-1].height;
-		svgHeight += this.BOTTOM_PADDING;
+		// var svgHeight = this.rows[this.rows.length-1].y+this.rows[this.rows.length-1].height;
+		// svgHeight += this.BOTTOM_PADDING;
+		var svgHeight = this.calculateSvgHeight();
 		this.phonyScrollContainer.setPhonyHeight(svgHeight);
 
 
@@ -535,6 +549,14 @@ VE.AnnotateContainer = Backbone.View.extend({
 		// VE.annotate.PreviewRenderer.drawPreview(this.phonyScrollContainer.scrollPreview.canvas,
 				// this.phonyScrollContainer.scrollPreview.context, this);
 	},
+
+
+	calculateSvgHeight: function() {
+		var h = (this.rows.length > 0) ? this.rows[this.rows.length-1].y+this.rows[this.rows.length-1].height : 0;
+		h += this.BOTTOM_PADDING;
+		return h;
+	},
+
 
 
 

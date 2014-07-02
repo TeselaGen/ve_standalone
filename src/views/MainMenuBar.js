@@ -18,6 +18,11 @@ VE.MainMenuBar = Backbone.UI.menu.MenuBar.extend({
 					items: [
 						{
 							label: 'New Sequence',
+							on: {
+								click: function() {
+									me.ve.trigger(VE.Event.BLANK_NEW_SEQUENCE);
+								},
+							},
 						},
 						{
 							type: 'menuseparator',
