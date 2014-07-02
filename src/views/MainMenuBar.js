@@ -614,21 +614,21 @@ VE.MainMenuBar = Backbone.UI.menu.MenuBar.extend({
 								},
 							}
 						},
-						// {
-						// 	type: 'menuseparator',
-						// },
-						// {
-						// 	label: 'Annotate Panel Preview',
-						// 	type: 'checkbox',
-						// 	checked: elements.ve.options.showAnnotatePreview,
-						// 	on: {
-						// 		click: function() {
-						// 			me.ve.options.showAnnotatePreview = !me.ve.options.showAnnotatePreview;
-						// 			me.ve.trigger(VE.VisibilityEvent.SHOW_ANNOTATE_PREVIEW_CHANGED, me.ve.options.showAnnotatePreview);
+						{
+							type: 'menuseparator',
+						},
+						{
+							label: 'Annotate Panel Preview',
+							type: 'checkbox',
+							checked: elements.ve.options.showAnnotatePreview,
+							on: {
+								click: function() {
+									me.ve.options.showAnnotatePreview = !me.ve.options.showAnnotatePreview;
+									me.ve.trigger(VE.VisibilityEvent.SHOW_ANNOTATE_PREVIEW_CHANGED, me.ve.options.showAnnotatePreview);
 
-						// 		},
-						// 	}
-						// },
+								},
+							}
+						},
 					],
 				},
 				{

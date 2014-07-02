@@ -364,7 +364,8 @@ Backbone.UI.PhonyScrollPreview = Backbone.View.extend({
 
 		this.$el.on('mousedown', onPhonyScrollPreviewMouseDown.bind(this));
 
-		this.$el.appendTo(this.wrapper.el);
+		// this.$el.appendTo(this.wrapper.el);
+		this.wrapper.$('.phony-scroll-bar').after(this.$el);
 	},
 
 	onScrollTo: function(scrollPercent) {

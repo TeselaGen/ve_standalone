@@ -1111,6 +1111,7 @@ VE.AnnotateContainer = Backbone.View.extend({
 		this.on(VE.VisibilityEvent.SHOW_SPACES_CHANGED, this.onShowSpacesChanged, this);
 		this.on(VE.VisibilityEvent.SHOW_FEATURES_CHANGED, this.onShowFeaturesChanged, this);
 		this.on(VE.VisibilityEvent.SHOW_SEQUENCE_AA_CHANGED, this.onShowSequenceAAChanged, this);
+		this.on(VE.VisibilityEvent.SHOW_ANNOTATE_PREVIEW_CHANGED, this.onShowAnnotatePreviewChanged, this);
 
 		this.on(VE.SelectionEvent.CHANGE_CARET_POSITION, this.onChangeCaretPosition, this);
 		this.on(VE.SelectionEvent.SELECT, this.onSelect, this);
@@ -1130,6 +1131,30 @@ VE.AnnotateContainer = Backbone.View.extend({
 			.on('contextmenu', 'rect.annotateSelectionRect', {me: this}, this.onSelectionContextMenu);
 
 			
+	},
+
+
+
+	onShowAnnotatePreviewChanged: function(showAnnotatePreview) {
+		var me = this;
+		if(showAnnotatePreview) {
+			this.phonyScrollContainer.scrollPreview.setPhonyHeight(this.calculateSvgHeight());
+
+			this.phonyScrollContainer.scrollPreview.render = function() {
+				// console.time('a');
+
+				VE.annotate.PreviewRenderer.drawPreview(me.phonyScrollContainer.scrollPreview.canvas,
+					me.phonyScrollContainer.scrollPreview.context, me);
+
+				// console.timeEnd('a');
+			}
+			this.phonyScrollContainer.scrollPreview.render();
+
+		}
+		
+		this.bpPerRow = this.calculateBpPerRow();
+		this.calculateRows();
+		this.render();
 	},
 
 
