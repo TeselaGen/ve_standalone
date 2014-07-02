@@ -129,6 +129,7 @@ includeScript('manager/RestrictionEnzymeManager.js');
 includeScript('manager/WorkersManager.js');
 includeScript('manager/EditingManager.js');
 includeScript('manager/CollaborativeUndoManager.js');
+includeScript('manager/ExportManager.js');
 
 
 includeScript('renderer/Util.js');

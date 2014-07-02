@@ -24,15 +24,15 @@ VE.MainMenuBar = Backbone.UI.menu.MenuBar.extend({
 								},
 							},
 						},
-						{
-							type: 'menuseparator',
-						},
-						{
-							label: 'Save',
-						},
-						{
-							label: 'Save As...',
-						},
+						// {
+						// 	type: 'menuseparator',
+						// },
+						// {
+						// 	label: 'Save',
+						// },
+						// {
+						// 	label: 'Save As...',
+						// },
 						{
 							type: 'menuseparator',
 						},
@@ -52,6 +52,21 @@ VE.MainMenuBar = Backbone.UI.menu.MenuBar.extend({
 						},
 						{
 							label: 'Export To File',
+							items: [
+								{
+									label: 'GENBANK',
+									on: {
+										click: function() {
+											var gb = VE.ExportManager.sequenceModelToGenbank(me.ve.model);
+											VE.ExportManager.saveStringToFile(gb, me.ve.model.get('name') + '.gb');
+
+
+										},
+									},
+								},
+								// FASTA
+								// SBOL XML/RDF
+							],
 						},
 						{
 							type: 'menuseparator',
