@@ -24,7 +24,12 @@ function fn() {
 	vectorEditor = new VE.VectorEditor({
 		renderTo: d3.select('body'),
 		sequence: sequence,
-		// options: {},
+		options: {
+
+			// showAminoAcidsRevCom: true,
+			// aminoAcidRevComFrames: [0, 1],
+
+		},
 	});
 
 	// sequence.needsRecalc__orfs = true;

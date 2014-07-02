@@ -635,66 +635,102 @@ VE.AnnotateContainer = Backbone.View.extend({
 	},
 
 
+
 	// incorrect
 	getRowRevcomAaStr: function(rowIndex, frame) {
-		var seqlen = this.model.length();
 		var bpPerRow = this.bpPerRow;
+		var sequence = this.model.get('sequence');
 
-		var rowStartBp = rowIndex * bpPerRow;
-		var rowEndBp = (rowIndex + 1) * bpPerRow;
+		function getRevcomRowStr(index) {
+			var start = index*bpPerRow;
+			var bpInRow = Math.min(start + bpPerRow, sequence.length) - start;
+			var ret = "";
 
-		var rowStartBpPrime = seqlen - rowEndBp;
-		var rowEndBpPrime = seqlen - rowStartBp;
-
-		var startPrime = rowStartBpPrime + frame;
-		var len = Math.ceil((rowEndBpPrime - startPrime)/3) * 3;
-		var endPrime = startPrime + len;
-
-
-		var start = seqlen - endPrime;
-		var end = seqlen - startPrime;
-
-		var bps = this.model.getSubstring(start, end).toLowerCase();
-
-
-		var revcomBps = [];
-		for(var i=bps.length-1;i>=0;i--) {
-			revcomBps.push(VE.RendererUtil.complementSymbol(bps[i]))
-		}
-		
-		// console.log(bps)
-
-		// var start = rowStartBp + frame;
-		// var len = Math.ceil((rowEndBp - start)/3) * 3;
-		// var end = start + len;
-
-
-		// var bps = this.model.getSubstring(start, end).toLowerCase();
-
-		var aas = Bio.Translator.translateSequence(revcomBps);
-		// console.log(aas);
-
-
-		var a = [];
-		for(var i=0;i<frame;i++) {
-			a.push(' ');
-		}
-		for(var i=0,ii=aas.length;i<ii;i++) {
-			a.push(aas[i], '  ');
-		}
-
-		aas = a.join('');
-
-		if(this.showSpaceEvery10Bp) {
-			var a = [];
-			for(var i=0;i<aas.length;i+=10) {
-				a.push(aas.slice(i,i+10));
+			for(var i=0;i<bpInRow;i++) {
+				ret += sequence[start + i];
 			}
-			return a.join(' ');
-		} else {
-			return aas;
+			ret = ret.toLowerCase();
+			return VE.RendererUtil.complement(ret);
 		}
+
+		var str = getRevcomRowStr(rowIndex);
+
+		
+
 	},
+
+	// // incorrect
+	// getRowRevcomAaStr: function(rowIndex, frame) {
+	// 	var seqlen = this.model.length();
+	// 	var bpPerRow = this.bpPerRow;
+
+	// 	var rowStartBp = rowIndex * bpPerRow;
+	// 	var rowEndBp = (rowIndex + 1) * bpPerRow;
+
+	// 	var rowStartBpPrime = seqlen - rowEndBp;
+	// 	var rowEndBpPrime = seqlen - rowStartBp;
+
+	// 	// var startPrime = rowStartBpPrime + frame;
+	// 	var startPrime = rowStartBpPrime - frame;
+	// 	// var startPrime = rowStartBpPrime - frame - 1;
+
+	// 	var len = Math.ceil((rowEndBpPrime - startPrime)/3) * 3;
+
+	// 	// var r = rowEndBpPrime - startPrime;
+	// 	// var len = r - r%3;
+
+
+	// 	var endPrime = startPrime + len;
+
+
+	// 	var start = seqlen - endPrime;
+	// 	var end = seqlen - startPrime;
+
+	// 	console.log(startPrime, endPrime)
+	// 	console.log(frame, start, end)
+
+	// 	var bps = this.model.getSubstring(start, end).toLowerCase();
+	// 	// var bps = this.model.getSubstring(startPrime, endPrime).toLowerCase();
+
+	// 	var revcomBps = [];
+	// 	for(var i=bps.length-1;i>=0;i--) {
+	// 		revcomBps.push(VE.RendererUtil.complementSymbol(bps[i]))
+	// 	}
+		
+	// 	// console.log(bps)
+	// 	// console.log(revcomBps.join(''));
+
+	// 	// var start = rowStartBp + frame;
+	// 	// var len = Math.ceil((rowEndBp - start)/3) * 3;
+	// 	// var end = start + len;
+
+
+	// 	// var bps = this.model.getSubstring(start, end).toLowerCase();
+
+	// 	var aas = Bio.Translator.translateSequence(revcomBps);
+	// 	// console.log(aas);
+
+
+	// 	var a = [];
+	// 	for(var i=0;i<frame;i++) {
+	// 		a.push(' ');
+	// 	}
+	// 	for(var i=0,ii=aas.length;i<ii;i++) {
+	// 		a.push(aas[i], '  ');
+	// 	}
+
+	// 	aas = a.join('');
+
+	// 	if(this.showSpaceEvery10Bp) {
+	// 		var a = [];
+	// 		for(var i=0;i<aas.length;i+=10) {
+	// 			a.push(aas.slice(i,i+10));
+	// 		}
+	// 		return a.join(' ');
+	// 	} else {
+	// 		return aas;
+	// 	}
+	// },
 
 
 
