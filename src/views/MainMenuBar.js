@@ -566,15 +566,15 @@ VE.MainMenuBar = Backbone.UI.menu.MenuBar.extend({
 								},
 							],
 						},
-						{
-							label: 'Revcom AA',
-							on: {
-								click: function() {
-									console.error('TEM: change menu item type to nested menu item (see Ext.js VE)');
+						// {
+						// 	label: 'Revcom AA',
+						// 	on: {
+						// 		click: function() {
+						// 			console.error('TEM: change menu item type to nested menu item (see Ext.js VE)');
 
-								},
-							}
-						},
+						// 		},
+						// 	}
+						// },
 						{
 							type: 'menuseparator',
 						},
@@ -614,6 +614,21 @@ VE.MainMenuBar = Backbone.UI.menu.MenuBar.extend({
 								},
 							}
 						},
+						// {
+						// 	type: 'menuseparator',
+						// },
+						// {
+						// 	label: 'Annotate Panel Preview',
+						// 	type: 'checkbox',
+						// 	checked: elements.ve.options.showAnnotatePreview,
+						// 	on: {
+						// 		click: function() {
+						// 			me.ve.options.showAnnotatePreview = !me.ve.options.showAnnotatePreview;
+						// 			me.ve.trigger(VE.VisibilityEvent.SHOW_ANNOTATE_PREVIEW_CHANGED, me.ve.options.showAnnotatePreview);
+
+						// 		},
+						// 	}
+						// },
 					],
 				},
 				{

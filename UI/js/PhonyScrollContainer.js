@@ -131,6 +131,19 @@ Backbone.UI.PhonyScrollContainer = Backbone.View.extend({
 		this.setPhonyScrollTop(this.getPhonyScrollTop() + approximateDeltaScrollTop);
 	},
 
+	hidePreview: function() {
+		this.showPreview = false;
+		if(this.scrollPreview) {
+			this.scrollPreview.remove();
+		}	
+	},
+
+	displayPreview: function() {
+		this.showPreview = true;
+		this.scrollPreview = new Backbone.UI.PhonyScrollPreview({
+			wrapper: this,
+		});
+	},
 
 
 

@@ -28,7 +28,7 @@ VE.AnnotatePanel = Backbone.UI.Panel.extend({
 
 		this.phonyScrollContainer = new Backbone.UI.PhonyScrollContainer({
 			renderTo: this.el,
-			// showPreview: true,
+			showPreview: this.showAnnotatePreview,
 		})
 		.render()
 		;

@@ -35,7 +35,7 @@ VE.VectorEditor = function(args) {
 		}
 	}
 
-	var vePanel = this.vePanel = new VE.VePanel({
+	var vePanel = ve.vePanel = this.vePanel = new VE.VePanel({
 		parentEl: renderTo,
 		ve: ve,
 	}).render();

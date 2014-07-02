@@ -30,6 +30,8 @@ VE.Ve = function() {
 		
 		viewMode: 'pie', // 'pie', 'rail'
 
+		showAnnotatePreview: false,
+
 		// aminoAcidFrames: [],
 
 		orfMinimumLength: 300,
@@ -83,7 +85,7 @@ VE.Ve.prototype.addListeners = function() {
 
 	this.on(VE.VisibilityEvent.SHOW_CUTSITES_CHANGED, this.onShowCutSitesChanged, this);
 	this.on(VE.VisibilityEvent.SHOW_ORFS_CHANGED, this.onShowOrfsChanged, this);
-
+	this.on(VE.VisibilityEvent.SHOW_ANNOTATE_PREVIEW_CHANGED, this.onShowAnnotatePreviewChanged, this);
 
 	// Temporary way of setting event.
 	// $('body').on('keydown', this.onKeyDown.bind(this));
@@ -97,6 +99,17 @@ VE.Ve.prototype.addListeners = function() {
 
 	// $(document).keydown('.ve-annotate-panel', this.onKeyDown.bind(this));
 
+};
+
+
+
+
+VE.Ve.prototype.onShowAnnotatePreviewChanged = function(showAnnotatePreview) {
+	if(showAnnotatePreview) {
+		this.vePanel.annotatePanel.phonyScrollContainer.displayPreview();
+	} else {
+		this.vePanel.annotatePanel.phonyScrollContainer.hidePreview();
+	}
 };
 
 

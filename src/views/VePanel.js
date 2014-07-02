@@ -71,6 +71,7 @@ VE.VePanel = Backbone.View.extend({
 				},
 				ve: this.ve,
 				title: 'Sequence',
+				showAnnotatePreview: this.ve.showAnnotatePreview,
 			});
 		}
 		this.annotatePanel.render();

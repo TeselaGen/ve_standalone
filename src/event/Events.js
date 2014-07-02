@@ -24,6 +24,8 @@ var eventsObj = {
 
 		// View mode changes from pie <-> rail.
 		VIEW_MODE_CHANGED: "ViewModeChanged", // viewMode
+
+		SHOW_ANNOTATE_PREVIEW_CHANGED: "VE::VisibilityEvent::SHOW_ANNOTATE_PREVIEW_CHANGED", // showAnnotatePreview
 	},
 
 	SelectionEvent: {
