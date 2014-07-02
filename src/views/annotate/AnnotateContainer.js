@@ -473,22 +473,31 @@ VE.AnnotateContainer = Backbone.View.extend({
 		this.phonyScrollContainer.setPhonyHeight(svgHeight);
 
 
+		// var _a = 0;
+
+		
 		for(var i=rowIndices.top;i<=rowIndices.bottom;i++) {
+			
 			var row = this.rows[i];
 
+			
 			this.drawSplitLine(0, sequenceX2 + CHAR_WIDTH, row.y);
 
 			this.renderBpLabel(i*bpPerRow + 1, 10, row.y + 20);
 
+			// var _b = performance.now();
 			this.drawBpText(i);
+			// _a += performance.now() - _b;
 
 			if(this.showComplementarySequence) {
 				this.drawRevcomBpText(i);
 			}
 
+			
 			if(this.showFeatures) {
 				VE.annotate.FeatureRenderer.drawFeatures(this, i);
 			}
+			
 
 			if(this.showCutSites) {
 				VE.annotate.CutSiteRenderer.drawCutSites(this, i);
@@ -509,9 +518,10 @@ VE.AnnotateContainer = Backbone.View.extend({
 			if(this.showAminoAcidsRevCom) {
 				this.renderRevComAA(i);
 			}
-
+			
 		}
-
+		
+		// console.log(_a);
 
 		if(this.selectionStartBp !== null && this.selectionEndBp !== null) {
 			this.drawSelectionLayer(this.selectionStartBp, this.selectionEndBp);
@@ -549,6 +559,38 @@ VE.AnnotateContainer = Backbone.View.extend({
 		// VE.annotate.PreviewRenderer.drawPreview(this.phonyScrollContainer.scrollPreview.canvas,
 				// this.phonyScrollContainer.scrollPreview.context, this);
 	},
+
+
+
+	
+	drawBpText: function(rowIndex) {
+		var row = this.rows[rowIndex];
+		var rowStr = this.getRowStr(rowIndex);
+		this.sequenceSVG.append("svg:text")
+				.attr("class", "sequenceSVG")
+				.attr("x", this.getSequenceX1())
+				// .attr("y", row.y +this.getBpTextOffset(row))
+				.attr("y", row.y + this.getBpTextOffset(row) - this.scrollTop)
+				.text(rowStr);
+	},
+
+
+	clean: function() {
+		this.linesSVG.selectAll('*').remove();
+		this.sequenceSVG.selectAll('*').remove();
+		this.bpLabelsSVG.selectAll('*').remove();
+		this.aminoAcidsSVG.selectAll('*').remove();
+		this.alignmentsSVG.selectAll('*').remove();
+		this.featuresSVG.selectAll('*').remove();
+
+		this.orfsSVG.selectAll('*').remove();
+		this.cutSitesSVG.selectAll('*').remove();
+
+		// this.selectionLayerSVG.selectAll('*').remove();
+		this.queryGapSVG.selectAll('*').remove();
+	},
+
+
 
 
 	calculateSvgHeight: function() {
@@ -756,16 +798,7 @@ VE.AnnotateContainer = Backbone.View.extend({
 
 
 
-	drawBpText: function(rowIndex) {
-		var row = this.rows[rowIndex];
-		var rowStr = this.getRowStr(rowIndex);
-		this.sequenceSVG.append("svg:text")
-				.attr("class", "sequenceSVG")
-				.attr("x", this.getSequenceX1())
-				// .attr("y", row.y +this.getBpTextOffset(row))
-				.attr("y", row.y + this.getBpTextOffset(row) - this.scrollTop)
-				.text(rowStr);
-	},
+	
 
 	drawRevcomBpText: function(rowIndex) {
 		var row = this.rows[rowIndex];
@@ -1041,20 +1074,6 @@ VE.AnnotateContainer = Backbone.View.extend({
 	},
 
 
-	clean: function() {
-		this.linesSVG.selectAll('*').remove();
-		this.sequenceSVG.selectAll('*').remove();
-		this.bpLabelsSVG.selectAll('*').remove();
-		this.aminoAcidsSVG.selectAll('*').remove();
-		this.alignmentsSVG.selectAll('*').remove();
-		this.featuresSVG.selectAll('*').remove();
-
-		this.orfsSVG.selectAll('*').remove();
-		this.cutSitesSVG.selectAll('*').remove();
-
-		// this.selectionLayerSVG.selectAll('*').remove();
-		this.queryGapSVG.selectAll('*').remove();
-	},
 
 	initCaret: function() {
 		var sequenceX1 = this.getSequenceX1();
