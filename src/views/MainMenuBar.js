@@ -97,9 +97,19 @@ VE.MainMenuBar = Backbone.UI.menu.MenuBar.extend({
 						},
 						{
 							label: 'Undo',
+							on: {
+								click: function() {
+									me.ve.undo();
+								},
+							},
 						},
 						{
 							label: 'Redo',
+							on: {
+								click: function() {
+									me.ve.redo();
+								},
+							},
 						},
 					],
 				},
