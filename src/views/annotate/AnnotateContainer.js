@@ -558,6 +558,19 @@ VE.AnnotateContainer = Backbone.View.extend({
 
 		// VE.annotate.PreviewRenderer.drawPreview(this.phonyScrollContainer.scrollPreview.canvas,
 				// this.phonyScrollContainer.scrollPreview.context, this);
+
+		this.resizeSvg();
+	},
+
+
+	resizeSvg: function() {
+		var width = this.$el.width();
+		var height = this.$el.height();
+		// console.log(width, height);
+		this.annotateSVG.attr({
+			width: width,
+			height: height,
+		});
 	},
 
 
@@ -1513,7 +1526,8 @@ VE.AnnotateContainer = Backbone.View.extend({
 
 
 	calculateBpPerRow: function() {
-		var width = $(this.annotateSVG.node()).width();
+		// var width = $(this.annotateSVG.node()).width();
+		var width = this.$el.width();
 		var effectiveWidth = width - this.getSequenceX1();
 
 		var chunkSize = 10 * this.CHAR_WIDTH;
