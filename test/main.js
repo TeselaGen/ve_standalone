@@ -880,4 +880,89 @@ if(VE.allScriptsAddedToQueue && VE.scriptQueue.length === 0) {
 
 
 
+/**
+ q = VE.RestrictionEnzymeManager.enzymeGroups.common;
+ w = [];
+ for(var i=0;i<q.length;i++) {
+	var r = q[i];
+	var a = r.attributes;
+	w.push(a);
+ }
+ s = JSON.stringify(VE.RestrictionEnzymeManager.enzymeGroups.common, null, '\t');
+ console.log(s);
+
+
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
