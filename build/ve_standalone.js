@@ -23761,7 +23761,12 @@ var SymbolListOperation = VE.ot.SymbolListOperation = StringOperation.extend({
 			} else if(isInsert(comp)) {
 				inverse.delete(comp.insert.length);
 				// newStr.push(comp.insert);
-				sequence.splice.bind(sequence, pos, 0).apply(sequence, comp.insert.split(''));
+
+
+				// sequence.splice.bind(sequence, pos, 0).apply(sequence, comp.insert.split(''));
+				spliceStringAsArray(sequence, pos, 0, comp.insert);
+
+
 				pos += comp.insert.length;
 			} else if(isDelete(comp)) {
 				inverse.insert(sequence.slice(pos, pos + comp.delete).join(''));
@@ -23789,6 +23794,14 @@ var SymbolListOperation = VE.ot.SymbolListOperation = StringOperation.extend({
 
 	
 
+
+
+function spliceStringAsArray(array, index, howmany, str) {
+	array.splice(index, howmany);
+	for(var i=0,ii=str.length;i<ii;i++) {
+		array.splice(index + i, 0, str[i]);
+	}
+}
 
 
 
