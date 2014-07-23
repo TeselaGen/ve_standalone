@@ -210,7 +210,7 @@ GenbankParser.parseLocus = function(line) {
 		// gb.addMessage("WARNING! Locus line contains no values: " + line);
 	}
 
-	locusName = reformatName(lineArr[1]);
+	locusName = VE.ParserUtil.reformatName(lineArr[1]);
 
 	// BAC180K
 	//console.log(locusName);
@@ -646,19 +646,6 @@ GenbankParser.setType = function(key, isKey) {
 }
 
 
-
-/**
- * Reformat name to be only alphanumeric with underscores "_" or hyphens "-".
- * Replaces special characters with underscores.
- *(REFACTORED FROM DEVICEDESIGNMANAGER)
- * @param {String} pName
- * @returns {String} New name.
- */
-function reformatName(pName) {
-	return pName.toString().replace(/[^a-zA-Z0-9_\-]/g, "_");
-}
-
-	
 
 	
 

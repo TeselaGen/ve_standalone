@@ -60,7 +60,7 @@ VE.WorkersManager.on(VE.IoEvent.PARSE_SEQUENCE_FROM_FILE, function(file, cb) {
 
 
 
-VE.WorkersManager.createSequenceParserWorker();
+// VE.WorkersManager.createSequenceParserWorker();
 
 
 

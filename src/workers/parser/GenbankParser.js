@@ -1,4 +1,4 @@
-(function(){
+// (function(){
 
 var isWorker;
 if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
@@ -913,4 +913,4 @@ GenbankParser.prototype.setType = function(key, isKey) {
 	
 
 
-})();
+// })();

@@ -237,6 +237,15 @@ VE.Sequence.fromGenbank = function(gb) {
 };
 
 
+/**
+ * @param {String} fasta Fasta file content as a string.
+ */
+VE.Sequence.fromFasta = function(fasta) {
+	var serSeq = VE.FastaParser.fastaToSerialized(fasta);
+	var sequence = VE.Sequence.deserialize(serSeq);
+	return sequence;
+};
+
 
 
 

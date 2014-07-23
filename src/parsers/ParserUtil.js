@@ -375,9 +375,27 @@ ParserUtil.serSeqToSeqData = function(serSeq) {
 
 
 
+ParserUtil.readFile = function(file, cb) {
+	var reader = new FileReader();
+	reader.onloadend = function() {
+		var content = reader.result;
+		return cb(content);
+	};
+	reader.readAsBinaryString(file);
+};
 
 
 
+/**
+ * Reformat name to be only alphanumeric with underscores "_" or hyphens "-".
+ * Replaces special characters with underscores.
+ *(REFACTORED FROM DEVICEDESIGNMANAGER)
+ * @param {String} pName
+ * @returns {String} New name.
+ */
+ParserUtil.reformatName = function(pName) {
+	return pName.toString().replace(/[^a-zA-Z0-9_\-]/g, "_");
+}
 
 
 

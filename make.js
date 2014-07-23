@@ -121,17 +121,30 @@ function processWorker(worker) {
 	var oMain = concatFiles([main]);
 
 	var src = [oSources, oMain].join('\n');
-	src = '(function(){' + 
+
+
+	// src = '(function(){' + 
+	// 	'importScripts = function(){};' +
+	// 	src +
+	// 	'})()';
+
+	// src = 'workerProxies['+JSON.stringify(proxy)+'] = URL.createObjectURL( new Blob([' +
+	// 	src +
+	// 	'], { type: "application/javascript" }));\n';
+
+
+
+
+	src = 'function(){' + 
 		'importScripts = function(){};' +
 		src +
-		'})()';
-	
-	src = 'workerProxies['+JSON.stringify(proxy)+'] = URL.createObjectURL( new Blob([' +
+		'}.toString()';
+
+	src = 'workerProxies['+JSON.stringify(proxy)+'] = URL.createObjectURL( new Blob(["(",' +
 		src +
-		'], { type: "application/javascript" }));\n';
+		', ")()"], { type: "application/javascript" }));\n';
 
 
-	// workerProxies[proxy] =
 
 
 	return src;

@@ -75,7 +75,7 @@
 
 
 		'src/manager/RestrictionEnzymeManager.js',
-		'src/manager/WorkersManager.js',
+		// 'src/manager/WorkersManager.js',
 		'src/manager/EditingManager.js',
 		'src/manager/CollaborativeUndoManager.js',
 		'src/manager/ExportManager.js',
@@ -120,10 +120,12 @@
 		'src/ot/features/FeatureOperation.js',
 		'src/ot/features/FeatureModification.js',
 
-
-		'src/parsers/GenbankParser.js',
-		'src/parsers/ParserUtil.js',
 		
+		'src/parsers/GenbankParser.js',
+		'src/parsers/FastaParser.js',
+		'src/parsers/ParserUtil.js',
+		'src/parsers/SequenceParser.js',
+
 
 		'src/adaptors/TeselagenAdaptor.js',
 
@@ -185,33 +187,33 @@
 	],
 
 
-	"workers": [
-		{
-			"proxy": "workers/SequenceParserWorker.js",
+	// "workers": [
+	// 	{
+	// 		"proxy": "workers/SequenceParserWorker.js",
 
-			"main": "src/workers/SequenceParserWorker.js",
+	// 		"main": "src/workers/SequenceParserWorker.js",
 
-			"sources": [
-				'src/workers/lib/asmcrypto.js',
-				'src/workers/lib/xml-for-cocoonjs.js',
+	// 		"sources": [
+	// 			'src/workers/lib/asmcrypto.js',
+	// 			'src/workers/lib/xml-for-cocoonjs.js',
 
-				'src/workers/util/NameUtils.js',
-				'src/workers/util/StringUtil.js',
-				'src/workers/util/FileWrapper.js',
-				'src/workers/util/ParserUtil.js',
-				'src/workers/util/XmlToJson.js',
-				'src/workers/util/FileUtil.js',
-				'src/workers/util/Throttler.js',
+	// 			'src/workers/util/NameUtils.js',
+	// 			'src/workers/util/StringUtil.js',
+	// 			'src/workers/util/FileWrapper.js',
+	// 			'src/workers/util/ParserUtil.js',
+	// 			'src/workers/util/XmlToJson.js',
+	// 			'src/workers/util/FileUtil.js',
+	// 			'src/workers/util/Throttler.js',
 
-				'src/workers/parser/GenbankParser.js',
-				'src/workers/parser/FastaParser.js',
-				'src/workers/parser/JbeiseqParser.js',
-				'src/workers/parser/SbolParser.js',
+	// 			'src/workers/parser/GenbankParser.js',
+	// 			'src/workers/parser/FastaParser.js',
+	// 			'src/workers/parser/JbeiseqParser.js',
+	// 			'src/workers/parser/SbolParser.js',
 
-				'src/workers/util/ajax.js',
-			],
-		},
-	],
+	// 			'src/workers/util/ajax.js',
+	// 		],
+	// 	},
+	// ],
 
 
 

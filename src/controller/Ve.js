@@ -53,7 +53,7 @@ VE.Ve = function() {
 
 	this.addListeners();
 
-	this.addObjectToEvents(VE.WorkersManager);
+	this.addObjectToEvents(VE.SequenceParser);
 
 
 	
