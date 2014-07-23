@@ -1,3 +1,18 @@
+(function(){
+
+var isWorker;
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+	isWorker = true;
+} else {
+	isWorker = false;
+}
+
+
+
+
+
+
+
 
 
 
@@ -12,14 +27,10 @@ var GenbankParser = function(file) {
 
 };
 
-// run this in global scope of window or worker. since window.self = window, we're ok
-if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
-	// huzzah! a worker!
-	GenbankParser.prototype.isWorker = true;
-} else {
-	// I'm a window... sad trombone.
-	GenbankParser.prototype.isWorker = false;
-}
+
+GenbankParser.prototype.isWorker = isWorker;
+
+
 
 GenbankParser.prototype.self = {
 	LOCUS_TAG: "LOCUS",
@@ -834,4 +845,72 @@ GenbankParser.prototype.setType = function(key, isKey) {
 }
 
 	
+	
 
+	
+
+	
+
+	
+
+	
+
+	
+	
+
+	
+// if(!isWorker) {
+// 	VE.GenbankParser = GenbankParser;
+
+
+
+
+
+
+// 	GenbankParser.genbankToSerialized = function() {
+
+
+
+
+
+
+// 	};
+
+
+
+
+
+
+
+
+
+// }
+	
+
+	
+
+	
+
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+})();

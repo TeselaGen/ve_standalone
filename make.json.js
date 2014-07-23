@@ -121,6 +121,10 @@
 		'src/ot/features/FeatureModification.js',
 
 
+		'src/parsers/GenbankParser.js',
+		'src/parsers/ParserUtil.js',
+		
+
 		'src/adaptors/TeselagenAdaptor.js',
 
 

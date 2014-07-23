@@ -288,8 +288,10 @@ VE.PieContainer = Backbone.View.extend({
 
 	resetRailRadius: function(newRadius) {
 		this.railRadius = newRadius;
-		this.frame.remove();
-		this.caret.remove();
+		// this.frame.remove();
+		// this.caret.remove();
+		if(this.frame) { this.frame.remove(); }
+		if(this.caret) { this.caret.remove(); }
 		this.initFrame();
 		this.initCaret();
 	},
@@ -298,8 +300,10 @@ VE.PieContainer = Backbone.View.extend({
 
 	initPie: function() {
 		this.initNameBox();
-		this.initFrame();
-		this.initCaret();
+		// this.initFrame();
+		// this.initCaret();
+		if(!this.frame) { this.initFrame(); }
+		if(!this.caret) { this.initCaret(); }
 		this.initSelectionLayer();
 		this.initWireframeSelectionLayer();
 	},

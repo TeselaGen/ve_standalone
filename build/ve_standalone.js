@@ -7223,6 +7223,21 @@ Throttler.prototype.run = function() {
 
 
 
+(function(){
+
+var isWorker;
+if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
+	isWorker = true;
+} else {
+	isWorker = false;
+}
+
+
+
+
+
+
+
 
 
 
@@ -7237,14 +7252,10 @@ var GenbankParser = function(file) {
 
 };
 
-// run this in global scope of window or worker. since window.self = window, we're ok
-if (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope) {
-	// huzzah! a worker!
-	GenbankParser.prototype.isWorker = true;
-} else {
-	// I'm a window... sad trombone.
-	GenbankParser.prototype.isWorker = false;
-}
+
+GenbankParser.prototype.isWorker = isWorker;
+
+
 
 GenbankParser.prototype.self = {
 	LOCUS_TAG: "LOCUS",
@@ -8059,8 +8070,75 @@ GenbankParser.prototype.setType = function(key, isKey) {
 }
 
 	
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+	
+
+	
+// if(!isWorker) {
+// 	VE.GenbankParser = GenbankParser;
 
 
+
+
+
+
+// 	GenbankParser.genbankToSerialized = function() {
+
+
+
+
+
+
+// 	};
+
+
+
+
+
+
+
+
+
+// }
+	
+
+	
+
+	
+
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+})();
 
 
 var FastaParser = function(file) {
@@ -14733,6 +14811,9 @@ VE.Sequence = Backbone.Model.extend({
 	},
 
 
+
+
+
 });
 
 
@@ -14789,6 +14870,14 @@ VE.Sequence.fromJSON = function(json) {
 
 
 
+/**
+ * @param {String} gb Genbank file content as a string.
+ */
+VE.Sequence.fromGenbank = function(gb) {
+	var serSeq = VE.GenbankParser.genbankToSerialized(gb);
+	var sequence = this.deserialize(serSeq);
+	return sequence;
+};
 
 
 
@@ -18350,8 +18439,10 @@ VE.PieContainer = Backbone.View.extend({
 
 	resetRailRadius: function(newRadius) {
 		this.railRadius = newRadius;
-		this.frame.remove();
-		this.caret.remove();
+		// this.frame.remove();
+		// this.caret.remove();
+		if(this.frame) { this.frame.remove(); }
+		if(this.caret) { this.caret.remove(); }
 		this.initFrame();
 		this.initCaret();
 	},
@@ -18360,8 +18451,10 @@ VE.PieContainer = Backbone.View.extend({
 
 	initPie: function() {
 		this.initNameBox();
-		this.initFrame();
-		this.initCaret();
+		// this.initFrame();
+		// this.initCaret();
+		if(!this.frame) { this.initFrame(); }
+		if(!this.caret) { this.initCaret(); }
 		this.initSelectionLayer();
 		this.initWireframeSelectionLayer();
 	},
@@ -30163,6 +30256,1126 @@ var FeatureModification = VE.ot.FeatureModification = VE.ot.StructOperation.exte
 
 
 })();
+(function(){
+
+
+
+
+
+var GenbankParser = VE.GenbankParser = {
+	LASTTYPE: false,
+	curSeq: null,
+};
+
+
+GenbankParser.self = {
+	LOCUS_TAG: "LOCUS",
+	DEFINITION_TAG: "DEFINITION",
+	ACCESSION_TAG: "ACCESSION",
+	VERSION_TAG: "VERSION",
+	KEYWORDS_TAG: "KEYWORDS",
+	//SEGMENT_TAG:"SEGMENT"
+	SOURCE_TAG: "SOURCE",
+	ORGANISM_TAG: "ORGANISM",
+	REFERENCE_TAG: "REFERENCE",
+	AUTHORS_TAG: "AUTHORS",
+	CONSORTIUM_TAG: "CONSRTM",
+	TITLE_TAG: "TITLE",
+	JOURNAL_TAG: "JOURNAL",
+	PUBMED_TAG: "PUBMED",
+	REMARK_TAG: "REMARK",
+	COMMENT_TAG: "COMMENT",
+	FEATURES_TAG: "FEATURES",
+	BASE_COUNT_TAG: "BASE COUNT",
+	//CONTIG_TAG: "CONTIG"
+	ORIGIN_TAG: "ORIGIN",
+	END_SEQUENCE_TAG: "//",
+};
+
+GenbankParser.reset = function() {
+	this.LASTTYPE = false;
+	this.curSeq = null;
+};
+
+
+GenbankParser.newSeq = function() {
+	this.curSeq = {
+		features: [],
+		inData: {},
+		sequence: []
+	};
+	// this.curFileContent = [];
+};
+
+
+
+// 'genbankToJbeiseqJson' for some useful stuff
+
+GenbankParser.newFeature = function() {
+	var newFeature = {
+		inData: {
+			locations: [],
+			index: this.curSeq.features.length,
+		},
+		notes: [],
+	};
+	this.curSeq.features.push(newFeature);
+};
+
+GenbankParser.getCurrentFeature = function() {
+	return this.curSeq.features[this.curSeq.features.length-1];
+};
+
+GenbankParser.getLastFeatureNote = function() {
+	var feat = this.getCurrentFeature();
+	return feat.notes[feat.notes.length-1];
+};
+
+
+GenbankParser.postProcessCurSeq = function() {
+	var curSeq = this.curSeq;
+
+	curSeq.sequence = curSeq.sequence.join('').split('');
+
+	var features = curSeq.features;
+	for(var i=0,ii=features.length;i<ii;i++) {
+		features[i] = VE.ParserUtil.postProcessGenbankFeature(features[i]);
+	}
+}
+
+
+/**
+ * @param {String} genbank Genbank file content as a string.
+ */
+GenbankParser.genbankToSerialized = function(genbank) {
+	this.reset();
+
+	var lines = genbank.split(/\r?\n/);
+	loop: for(var i=0,ii=lines.length;i<ii;i++) {
+		var line = lines[i];
+
+		var key = this.getLineKey(line);
+		var val = this.getLineVal(line);
+		var isKeyRunon = this.isKeywordRunon(line);
+		var isSubKey = this.isSubKeyword(line);
+		var isKey = this.isKeyword(line);
+
+		// IGNORE LINES: DO NOT EVEN PROCESS
+		if (line.trim() === "" || key==="COMMENT" || key===";") {
+			// console.warn("Parsing GenBank File: Empty line, 'COMMENT', or ';' detected. Ignoring line: " + line);
+			// gb.addMessage("Empty line, 'COMMENT', or ';' detected. Ignoring line: " + line);
+			continue;
+		}
+
+		this.setType(key, isKey);
+
+
+		switch (this.LASTTYPE) {
+		case this.self.LOCUS_TAG:
+			this.newSeq();
+			//console.log(line);
+			this.parseLocus(line);
+			break;
+		case this.self.FEATURES_TAG:
+			//console.log(line);
+			this.parseFeatures(line, key, val);
+			break;
+		case this.self.ORIGIN_TAG:
+			//console.log(line);
+			this.parseOrigin(line, key);
+			break;
+		case this.self.END_SEQUENCE_TAG:
+			break loop;
+			//console.warn("Parsing GenBank File: End of GenBank file detected.");
+			//console.log(line);
+			break;
+		case "COMMENT":
+			// do nothing
+			// console.warn("GenbankManager.lineParser(: This line contains a 'COMMENT' and has been ignored: " + line);
+			break;
+		default: // FOLLOWING FOR KEYWORDS NOT PREVIOUSLY DEFINED IN CASES
+			//console.log(line);
+			if ( key === "BASE") {
+				// do nothing;              // BLANK LINES || line with ;;;;;;;;;  || "BASE COUNT"
+				// console.warn("Parsing GenBank File: This line with BaseCount has been ignored: " + line);
+				// gb.addMessage("This line with BaseCount has been ignored: " + line);
+				break;
+			} else if ( isKey ) {
+				//console.log(line);
+				// REGULAR KEYWORDS (NOT LOCUS/FEATURES/ORIGIN) eg VERSION, ACCESSION, SOURCE, REFERENCE
+				// lastObj = this.parseKeyword(line, gb);
+			}  else if ( isSubKey ) {       // REGULAR SUBKEYWORD, NOT FEATURE eg AUTHOR, ORGANISM
+				//console.log(line);
+				// tmp = gb.getLastKeyword();
+				// lastObj = this.parseSubKeyword(tmp, line, gb);
+			} else if ( isKeyRunon ) {      // RUNON LINES FOR NON-FEATURES
+				//console.log(line);
+				//console.log(line);
+				// lastObj.setValue(lastObj.getValue() + Teselagen.StringUtil.rpad("\n"," ",13) + Ext.String.trim(line));
+				// lastObj.appendValue(Teselagen.StringUtil.rpad("\n"," ",13) + Ext.String.trim(line), gb);
+			} else {
+				// console.warn("Parsing GenBank File: This line has been ignored: " + line);
+				// gb.addMessage("This line has been ignored: " + line);
+				//console.log(line);
+			}
+		}
+
+	}
+
+	this.postProcessCurSeq();
+
+	var seq = this.curSeq;
+	this.curSeq = null;
+	return seq;
+};
+
+
+
+GenbankParser.parseOrigin = function(line, key) {
+	// var result;
+	if (key === this.self.ORIGIN_TAG) {
+		// result = Ext.create("Teselagen.bio.parsers.GenbankOriginKeyword");
+		// result.setKeyword(this.self.ORIGIN_TAG);
+		// gb.setOrigin(result);
+		// gb.addKeywordTag(this.self.ORIGIN_TAG);
+		//console.log(line);
+	} else {
+		// result = gb.getOrigin();
+		//console.log(line);
+		line = line.replace(/[\s]*[0-9]*/g,"");
+		// result.appendSequence(line);
+		this.curSeq.sequence.push(line);
+	}
+
+	// if (result === null || result === undefined) {
+	// 	console.warn("Parsing GenBank File: Could not create a GenbankOriginKeyword");
+	// 	gb.addMessage("Could not create a GenbankOriginKeyword at line " + line);
+	// }
+
+	// return result;
+};
+
+
+
+
+GenbankParser.parseLocus = function(line) {
+	var result, locusName, seqLen, strand, naType, linear, div, date;
+	var lineArr = line.split(/[\s]+/g);
+
+	if (lineArr.length <= 1) {
+		console.warn("Parsing GenBank File: WARNING! Locus line contains no values!");
+		// TODO
+		// gb.addMessage("WARNING! Locus line contains no values: " + line);
+	}
+
+	locusName = reformatName(lineArr[1]);
+
+	// BAC180K
+	//console.log(locusName);
+
+	// if(!Teselagen.utils.NameUtils.isLegalName(locusName)) {
+	// 	locusName = Teselagen.utils.NameUtils.reformatName(locusName);
+	// 	gb.addMessage('Invalid locus name. Illegal characters replaced with \'_\'.');
+	// }
+
+	// Sequence Length and bp
+	seqLen = "";
+	for (var i=1; i < lineArr.length; i++) {
+		if (lineArr[i].match(/^bp$/gi)) {
+			seqLen = parseInt(lineArr[i-1]);
+		}
+	}
+
+
+	// StrandType: T.H. Code defaults only to ds-DNA
+	strand = "";
+	for (i=1; i < lineArr.length; i++) {
+		if (lineArr[i].match(/^ss/gi)) {
+			strand = "ss";
+		} else if (lineArr[i].match(/^ds/gi)) {
+			strand = "ds";
+		}
+		//console.log(strand);
+	}
+
+
+	// naType: T.H. defaults to DNA.
+	naType = "";
+	for (i=1; i < lineArr.length; i++) {
+		if (lineArr[i].match(/DNA$/gi)) {
+			naType = "DNA";
+		} else if (lineArr[i].match(/RNA$/gi)) {
+			naType = "RNA";
+		}
+	}
+
+
+	// Linear vs Circular?; CANNOT HANDLE TANDEM
+	linear = true;
+	for (i=1; i < lineArr.length; i++) {
+		if (lineArr[i].match(/circular/gi)) {
+			linear = false;
+		}
+	}
+
+	// Date and Div
+	// Date is in this format:1-APR-2012
+	for (i=1; i < lineArr.length; i++) {
+		if (lineArr[i].match(/-[A-Z]{3}-/g)) {
+			date = lineArr[i];
+		}
+		if (lineArr[i].match(/^[A-Z]{3}/g) && lineArr[i].length === 3 && !lineArr[i].match(/DNA|RNA/g)) {
+			div = lineArr[i];
+		}
+	}
+
+
+	this.curSeq.inData.name = locusName;
+	this.curSeq.inData.circular = !linear;
+
+
+	// // Just rewrite the existing Locus object. It's easier than setting everything.
+	// result = Ext.create("Teselagen.bio.parsers.GenbankLocusKeyword", {
+	// 	locusName: locusName,
+	// 	sequenceLength: seqLen,
+	// 	strandType: strand,
+	// 	naType: naType,
+	// 	linear: linear,
+	// 	divisionCode: div,
+	// 	date: date
+	// });
+
+	// if (result === null || result === undefined) {
+	// 	console.warn("Parsing GenBank File: Could not create a GenbankLocusKeyword");
+	// 	gb.addMessage("Could not create a GenbankLocusKeyword at line " + line);
+	// }
+
+	// result.setKeyword(this.self.LOCUS_TAG);
+	// gb.addKeyword(result);
+	// gb.addKeywordTag(this.self.LOCUS_TAG);
+	// return result;
+};
+
+
+GenbankParser.parseFeatures = function(line, key, val) {
+	var result, featElm, featQual, lastElm, strand;
+	//console.log(line);
+	// FOR THE MAIN FEATURES LOCATION/QUALIFIER LINE
+	if (key === this.self.FEATURES_TAG) {
+		// result = Ext.create("Teselagen.bio.parsers.GenbankFeaturesKeyword");
+		// result.setKeyword(this.self.FEATURES_TAG);
+		// gb.setFeatures(result);
+		// gb.addKeywordTag(this.self.FEATURES_TAG);
+		// return result;
+		return;
+	}
+	
+	//throw new Error("DO SOMETHING HERE");
+
+	// FOR LOCATION && QUALIFIER LINES
+
+	var isQual		= this.isQualifier(line);
+	var isLineRunon	= this.isLineRunon(line);
+	// result = gb.getFeatures();
+
+	//console.log(line);
+
+	if (!isLineRunon) {    // New Element/Qualifier lines. Not runon lines.
+
+		if ( !isQual ) {    // is a new Feature Element (e.g. source, CDS) in the form of  "[\s] KEY  SEQLOCATION"
+			//strand = val.replace(/\(|\)|[\d]+|[.]+|,|>|</g, "");
+			if (val.match(/complement/g)) {
+				strand = -1;
+			} else {
+				strand = 1;
+			}
+			//console.log(line);
+
+			this.newFeature();
+			var feat = this.getCurrentFeature();
+			feat.inData.type = key;
+			feat.inData.strand = strand;
+
+
+			this.parseFeatureLocation(val);
+
+			/*featElm = Ext.create("Teselagen.bio.parsers.GenbankFeatureElement", {
+				keyword: key,
+				strand: strand,
+				complement: false,
+				join: false,
+				index: result.getFeaturesElements().length
+			}); // set complement and join correctly when parsing FeatureLocation
+			// Could be multiple locations per Element; Parses true/false complement||join
+			this.parseFeatureLocation(featElm, val, gb);
+
+			result.addElement(featElm);
+			lastObj = featElm;*/
+
+			this.lastLineWasLocation = true;
+
+		} else {    // is a FeatureQualifier in the /KEY="BLAH" format; could be multiple per Element
+			
+			this.parseFeatureQualifier(line);
+			// lastElm  = result.getLastElement();
+			// lastElm.addFeatureQualifier(featQual);
+			// lastObj  = featQual;
+
+			this.lastLineWasLocation = false;
+		}
+
+	} else {
+		//console.log(line);
+		if(this.lastLineWasLocation) {
+			// this.parseFeatureLocation( result.getLastElement() , Ext.String.trim(line), gb);
+			//console.log(line);
+			this.parseFeatureLocation(line.trim());
+
+			this.lastLineWasLocation = true;
+		} else {
+			// result.getLastElement().getLastFeatureQualifier().appendValue(Ext.String.trim(line).replace(/\"/g, ""));
+			this.getLastFeatureNote().value += line.trim().replace(/\"/g, "");
+			this.lastLineWasLocation = false;
+		}
+	}
+
+	// if (result === null || result === undefined) {
+	// 	console.warn("Parsing GenBank File: Could not create a GenbankFeaturesKeyword");
+	// 	gb.addMessage("Could not create a GenbankFeaturesKeyword at line " + line);
+	// }
+
+	// return result;
+};
+
+
+GenbankParser.parseFeatureLocation = function(locStr) {
+	
+	// function parseLocation(location) {
+	// 	var retval = {};
+	// 	if (location.start !== undefined) {
+	// 		retval.start  = parseInt((location.start).toString().replace(/\<|\>/, ""));
+	// 	}
+	// 	if (location.end !== undefined) {
+	// 		retval.end    = parseInt((location.end).toString().replace(/\<|\>/, ""));
+	// 	} else {
+	// 		retval.end = retval.start;  // If there is no end, make it the same as start
+	// 		retval.to  = "..";
+	// 	}
+	// 	if (location.to) {
+	// 		retval.to          = location.to;
+	// 		// This joins the start and end. start..
+	// 	}
+	// 	return retval;
+	// }
+
+	var parseLocation = VE.ParserUtil.parseGenbankFeatureLocation;
+
+	
+
+	var location;
+	var complement = false;
+	var join       = false;
+
+	locStr = locStr.trim();
+
+	if (locStr.match(/complement/i) ) {
+		complement = true;
+		// featElm.setComplement(true); //defult is false
+	}
+	if (locStr.match(/join/i) ) {
+		join = true;
+		// featElm.setJoin(true);
+	}
+
+	//locStr = locStr.replace(/complement|join|\(|\)|\>|\</g,"");
+	locStr = locStr.replace(/^,|,$|complement|join|\(|\)/g,"");
+	locArr = locStr.split(/,/g);
+
+	
+
+	for (var i=0; i<locArr.length; i++) {
+		var ind   = locArr[i].split(/[.]+/);
+		var toArr = locArr[i].match(/[.]+|\^/) || [];
+		var to    = toArr[0] || "";
+		// // GenbankFeatureLocation will deal with the partial <||> cases.
+		// location = Ext.create("Teselagen.bio.parsers.GenbankFeatureLocation", {
+		// 	start: ind[0],
+		// 	end: ind[1],
+		// 	to: to
+		// });
+		// featElm.addFeatureLocation(location);
+
+		var location = {
+			start: ind[0],
+			end: ind[1],
+			to: to
+		};
+		location = parseLocation(location);
+		var feat = this.getCurrentFeature();
+		feat.inData.locations.push(location);
+		//console.log([ind[0],ind[1],to]);
+	}
+	if (complement && join) {
+		// Do ReverseLocations Case
+		// This may not be neccesary with the inclusion of join and complement booleans.
+	}
+
+	// if (location === null || location === undefined) {
+	// 	console.warn("Parsing GenBank File: Could not create a GenbankFeatureLocation");
+	// 	gb.addMessage("Could not create a GenbankFeatureLocation from text '" + locStr + "'");
+	// }
+
+	// return location;
+};
+
+
+GenbankParser.parseFeatureQualifier = function(line) {
+	var featQual, newLine, lineArr;
+
+	newLine = line.trim();
+	newLine = newLine.replace(/^\/|"$/g, "");
+	lineArr = newLine.split(/=\"|=/);
+
+	var quoted = false;
+	var val = lineArr[1];
+
+	if(val) {
+		val = val.replace(/\\/g, " ");
+
+		if (line.match(/=\"/g)) {
+			quoted = true;
+			val = val.replace(/\".*/g, "");
+		} else if (val.match(/^\d+$/g)) {
+			val = parseInt(val);
+		} else {
+			quoted = false;
+		}
+	}
+
+	var note = {
+		inData: {
+			name: lineArr[0],
+			value: val,
+			quoted: quoted
+		}
+	};
+
+	this.getCurrentFeature().notes.push(note);
+
+	// featQual = Ext.create("Teselagen.bio.parsers.GenbankFeatureQualifier", {
+	// 	name: lineArr[0],
+	// 	value: val,
+	// 	quoted: quoted
+	// });
+
+	// if (featQual === null || featQual === undefined) {
+	// 	console.warn("Parsing GenBank File: Could not create a GenbankFeatureQualifier");
+	// 	gb.addMessage("Could not create a GenbankFeatureQualifier at line " + line);
+	// }
+	// return featQual;
+};
+
+
+
+
+GenbankParser.getLineKey = function(line) {
+	var arr;
+	line = line.replace(/^[\s]*/, "");
+
+	if(line.indexOf("=") < 0) {
+		arr = line.split(/[\s]+/);
+	} else {
+		arr = line.split(/=/);
+	}
+
+	return arr[0];
+};
+	
+GenbankParser.getLineVal = function(line) {
+	var arr;
+
+	if(line.indexOf("=") < 0) {
+		line = line.replace(/^[\s]*[\S]+[\s]+|[\s]+$/, "");
+		line = line.trim();
+		return line;
+	} else {
+		arr = line.split(/=/);
+		return arr[1];
+	}
+};
+
+GenbankParser.isKeyword = function(line) {
+	var isKey = false;
+	if ( line.substr(0,10).match(/^[\S]+/) ) {
+		isKey = true;
+	}
+	return isKey;
+};
+
+GenbankParser.isSubKeyword = function(line) {
+	var isSubKey = false;
+	if ( line.substr(0,10).match(/^[\s]+[\S]+/) ) {
+		isSubKey = true;
+	}
+	return isSubKey;
+};
+
+GenbankParser.isKeywordRunon = function(line) {
+	var runon;
+	if ( line.substr(0,10).match(/[\s]{10}/)) {
+		runon = true;
+	} else {
+		runon = false;
+	}
+	return runon;
+};
+
+GenbankParser.isQualifier = function(line) {
+	var qual = false;
+	/*if (line.charAt(21) === "/") {//T.H. Hard coded method
+			qual = true;
+		}*/
+	if ( line.trim().charAt(0).match(/\// )) { // searches based on looking for / in beginning of line
+		qual = true;
+	} else if ( line.match(/^[\s]*\/[\w]+=[\S]+/) ) { // searches based on "   /key=BLAH" regex
+		qual = true;
+	}
+	return qual;
+};
+
+GenbankParser.isQualifierRunon = function(line) {
+	var runon = false;
+	//if ( Ext.String.trim(line.substr(0,20)) === ""  && !Ext.String.trim(line).charAt(0).match(/\// ) && !isLocationRunon(line) ) {
+	if ( line.substr(0,10).trim() === "" && !line.trim().charAt(0).match(/\// ) && !this.isLocationRunon(line) ) {
+		//console.log("qual runon: " + line);
+		runon = true;
+	}
+	return runon;
+};
+
+GenbankParser.isLineRunon = function(line) {
+	var trimmed = line.trim();
+
+	// Regex to be applied to the trimmed line to determine if the line
+	// contains a prefix like complement( or join( for the definition of the
+	// feature location, as per specifications here:
+	// ftp://ftp.ncbi.nih.gov/genbank/gbrel.txt
+	//
+	// Prefixes can be in the form: ^<prefix> (
+	// I've made the space after the prefix optional to increase flexibility.
+	var prefixRegex = /^(order|join|complement)\s*\(/;
+
+	return line.substr(0,10).trim() === "" && (!trimmed.charAt(0).match(/\//) || trimmed.match(prefixRegex));
+};
+
+
+// /**
+//  * isAFeatureLabel
+//  * @param {String} name Name of a attribute or qualifier
+//  * @return {Boolean} isALabel
+//  */
+// GenbankParser.isAFeatureLabel = function(name) {
+// 	if (name === "label" || name === "name"|| name === "ApEinfo_label" ||
+// 		name === "note" || name === "gene" || name === "organism" || name === "locus_tag") {
+
+// 		return true;
+// 	} else {
+// 		return false;
+// 	}
+// }
+
+
+
+GenbankParser.setType = function(key, isKey) {
+	if (key === "LOCUS") {
+		this.LASTTYPE = key;
+	} else if (key === "REFERENCE") {
+		this.LASTTYPE = key;
+	} else if (key === "FEATURES") {
+		this.LASTTYPE = key;
+	} else if (key === "ORIGIN") {
+		this.LASTTYPE = key;
+	} else if (key === "//") {
+		this.LASTTYPE = key;
+	} else if (isKey === true) {
+		this.LASTTYPE = key;
+	}
+	//console.log(this.LASTTYPE);
+}
+
+
+
+/**
+ * Reformat name to be only alphanumeric with underscores "_" or hyphens "-".
+ * Replaces special characters with underscores.
+ *(REFACTORED FROM DEVICEDESIGNMANAGER)
+ * @param {String} pName
+ * @returns {String} New name.
+ */
+function reformatName(pName) {
+	return pName.toString().replace(/[^a-zA-Z0-9_\-]/g, "_");
+}
+
+	
+
+	
+
+	
+
+	
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+})();;
+(function(){
+
+
+
+var StringUtil = {
+	/** Trims white space at beginning and end of string
+	 * @param {String} line
+	 * @returns {String} line
+	 */
+	trim: function(line) {
+		return line.replace(/^\s+|\s+$/g,"");
+	},
+
+	/** Trims white space at beginning string
+	 * @param {String} line
+	 * @returns {String} line
+	 */
+	ltrim: function(line) {
+		return line.replace(/^\s+/,"");
+	},
+
+	/** Trims white space at end of string
+	 * @param {String} line
+	 * @returns {String} line
+	 */
+	rtrim: function(line) {
+		return line.replace(/\s+$/,"");
+	},
+
+	/** Pads white space at beginning of string
+	 * @param {String} line
+	 * @returns {String} line
+	 */
+	lpad: function(line, padString, length) {
+		var str = line;
+		while (str.length < length)
+			str = padString + str;
+		return str;
+	},
+
+	/** Pads white space at end of string
+	 * @param {String} line
+	 * @returns {String} line
+	 */
+	rpad: function(line, padString, length) {
+		var str = line;
+		while (str.length < length)
+			str = str + padString;
+		return str;
+	}
+};
+
+
+
+
+
+var ParserUtil = VE.ParserUtil = {};
+
+
+
+ParserUtil.serializedToGenbank = function(serSeq) {
+	
+	function cutUpArray(val, start, end) {
+		return val.slice(start, end).join('');
+	}
+
+	function cutUpStr(val, start, end) {
+		return val.slice(start, end);
+	}
+
+	var cutUp = (typeof serSeq.sequence === 'string') ? cutUpStr : cutUpArray;
+
+
+	var lines = [];
+	lines.push(this.createGenbankLocus(serSeq));
+	
+
+	if(serSeq.features.length > 0) {
+		lines.push("FEATURES             Location/Qualifiers");
+
+		for(var i=0;i<serSeq.features.length;i++) {
+			var feat = serSeq.features[i];
+			lines.push(this.featureToGenbankString(feat));
+		}
+
+	}
+
+
+	lines.push("ORIGIN      ");
+	for (var i=0 ; i < serSeq.sequence.length; i=i+60) {
+		var line = [];
+		var ind = StringUtil.lpad( (""+(i+1))," ", 9);
+		line.push(ind);
+
+		for (var j=i; j < i+60; j=j+10) {
+			// line.push(serSeq.sequence.slice(j,j+10).join(''));
+			line.push(cutUp(serSeq.sequence, j, j+10));
+		}
+		lines.push(line.join(' '));
+	}
+
+	lines.push('//');
+
+	return lines.join('\r\n');
+};
+
+ParserUtil.createGenbankLocus = function (serSeq) {
+	var tmp;
+
+	var naType = 'DNA'; // change if we support other types of sequences
+	var date = this.getCurrentDateString();
+
+	var line = StringUtil.rpad("LOCUS"," ", 12);
+	line += StringUtil.rpad(serSeq.inData.name," ", 16);
+	line += " "; // T.H line 2778 of GenbankFormat.as col 29 space
+	line += StringUtil.lpad(String(serSeq.sequence.length)," ", 11);
+	line += " bp "; // col 41
+	// if (this.strandType !== "") {
+	// 	tmp =  this.strandType + "-";
+	// } else {
+		tmp = "";
+	// }
+	line += StringUtil.lpad(tmp, " ", 3);
+	line += StringUtil.rpad(naType," ",6);
+	line += "  ";
+
+	if (serSeq.inData.circular === false) {
+		line += "linear  ";
+		//line += "        ";
+	} else {
+		line += "circular";
+	}
+
+	line += " "; //col 64
+	// if (this.divisionCode !== undefined) {
+	// 	line += StringUtil.rpad(this.divisionCode," ", 3);
+	// } else {
+		StringUtil.rpad(line, " ", 3);
+	// }
+	line += " "; // col 68
+	// DOES NOT PARSE DATE USEFULLY ORIGINALLY!
+	line += date;
+	//line += "\n";
+
+	return line;
+};
+
+ParserUtil.getCurrentDateString = function() {
+	var date = new Date();
+	date = date.toString().split(' ');
+	var day = date[2];
+	var month = date[1].toUpperCase();
+	var year = date[3];
+	return day+'-'+month+'-'+year;
+}
+
+
+ParserUtil.parseGenbankFeatureLocation = function(location) {
+	var retval = {};
+	if (location.start !== undefined) {
+		retval.start  = parseInt((location.start).toString().replace(/\<|\>/, ""));
+	}
+	if (location.end !== undefined) {
+		retval.end    = parseInt((location.end).toString().replace(/\<|\>/, ""));
+	} else {
+		retval.end = retval.start;  // If there is no end, make it the same as start
+		retval.to  = "..";
+	}
+	if (location.to) {
+		retval.to          = location.to;
+		// This joins the start and end. start..
+	}
+	return retval;
+}
+
+
+ParserUtil.postProcessGenbankFeature = function(feat) {
+	var name = null;
+	var nameIndex = null;
+
+	var hasName = false;
+	var usingLabel = false;
+	var usingGene = false;
+
+	for(var j=0;j<feat.notes.length;j++) {
+		var note = feat.notes[j];
+		var key = note.inData.name;
+		var value = note.inData.value;
+
+		// SET THE LABEL FIELD. DO NOT STORE AS AN ATTRIBUTE
+
+		if (this.isAGenbankFeatureLabel(key)) {
+			// Priority for name attributes is: 'label' > 'gene' > 'organism'.
+			// We check to see if the current name is from a lower-priority
+			// attribute. If it is, we store it as an attribute and then
+			// replace it with the current higher-priority attribute.
+
+			if(key === "label") {
+				// Label has top priority.
+				
+				name = value;
+				nameIndex = j;
+
+				usingLabel = true;
+			} else if(key === "gene") {
+
+				// If we're not using the label for the name, use the
+				// current 'gene' attribute. If we are using label for
+				// the name, just save the current attribute as a normal
+				// attribute.
+				if(!usingLabel) {
+					
+					name = value;
+					nameIndex = j;
+
+					usingGene = true;
+				}
+			} else if(!usingLabel && !usingGene) {
+				// If we don't have a label from either a 'gene' or a
+				// 'label' field, use the current field as the name.
+
+				name = value;
+				nameIndex = j;
+
+			}
+
+			hasName = true;
+		}
+	}
+
+	feat.inData.name = name || "";
+	if(nameIndex !== null) {
+		feat.notes.splice(nameIndex, 1);
+	}
+
+	
+	if(feat.inData.locations.length > 0) {
+		// var loc = feat.inData.locations[0];
+		// feat.inData.start = loc.start;
+		// feat.inData.end = loc.end;
+
+		var start = 999999999999999999999;
+		var end = 0;
+		var locs = feat.inData.locations;
+		for(var i=0;i<locs.length;i++) {
+			var loc = locs[i];
+			start = Math.min(start, loc.start);
+			end = Math.max(end, loc.end);
+		}
+		feat.inData.start = start;
+		feat.inData.end = end;
+
+	} else {
+		feat.inData.start = null;
+		feat.inData.end = null;
+	}
+
+	return feat;
+}
+
+
+
+/**
+ * isAFeatureLabel
+ * @param {String} name Name of a attribute or qualifier
+ * @return {Boolean} isALabel
+ */
+ParserUtil.isAGenbankFeatureLabel = function(name) {
+	if (name === "label" || name === "name"|| name === "ApEinfo_label" ||
+		name === "note" || name === "gene" || name === "organism" || name === "locus_tag") {
+
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+ParserUtil.featureNoteInDataToGenbankString = function(noteInData) {
+	if(noteInData.quoted) {
+		return StringUtil.lpad("/", " ", 22) + noteInData.name + "=\"" + noteInData.value + "\"";
+	} else {
+		return StringUtil.lpad("/"," ", 22) + noteInData.name + "=" + noteInData.value ;
+	}
+}
+
+ParserUtil.featureToGenbankString = function(feat) {
+	var lines = [];
+
+	var line = "     " + StringUtil.rpad(feat.inData.type, " ", 16);
+	var locStr = [];
+
+	for(var i=0;i<feat.inData.locations.length;i++) {
+		var loc = feat.inData.locations[i];
+		locStr.push(loc.start + '..' + loc.end);
+	}
+	locStr = locStr.join(',');
+
+	if(feat.inData.strand === -1) {
+		locStr = "complement(" + locStr + ")";
+	}
+
+	lines.push(line + locStr);
+
+	lines.push(this.featureNoteInDataToGenbankString({
+		name: 'label',
+		value: feat.inData.name,
+		quoted: true
+	}));
+
+	for(var i=0;i<feat.notes.length;i++) {
+		var noteInData = feat.notes[i].inData;
+		lines.push(this.featureNoteInDataToGenbankString(noteInData));
+	}
+
+	return lines.join('\r\n');
+}
+
+
+ParserUtil.detectXMLFormat = function(data) {
+	// use DOM parser from xml-for-cocoonjs.js as web workers can't access the DOM
+	var DOMParser = domParser;
+
+	var parser = new DOMParser();
+	var xmlDoc = parser.parseFromString(data, "text/xml");
+	var diff = xmlDoc.getElementsByTagName("seq:seq");
+	if(diff.length === 0) {diff = xmlDoc.getElementsByTagName("seq");}
+	// var json = xml2json(data);
+	
+	if (diff.length > 0) {
+		// JBEI-SEQ
+		return {
+			format: 'JBEI',
+			xml: xmlDoc
+		};
+	} else {
+		// SBOL
+		return {
+			format: 'SBOL',
+			xml: xmlDoc
+		};
+	}
+}
+
+
+// not really tested
+ParserUtil.removeXmlTagNamespaces = function(str) {
+	return str.replace(/\<(\/?)\w+\:/g, "<$1");
+}
+
+
+ParserUtil.serSeqToSeqData = function(serSeq) {
+	var data = {
+		dateCreated: "",
+		dateModified: "",
+		description: "",
+		firstTimeImported: true,
+		name: serSeq.inData.name,
+		partSource: serSeq.inData.name,
+		part_id: "",
+		sequenceFileContent: "",
+		sequenceFileFormat: "Genbank",
+		sequenceFileName: serSeq.inData.name,
+		serialize: serSeq,
+		size: serSeq.sequence.length,
+		strain_id: "",
+		user_id: "",
+		ve_metadata: "",
+	};
+	
+	data.hash = asmCrypto.SHA256.hex(ParserUtil.serializedToGenbank(serSeq));
+
+	return data;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+})();;
 
 
 VE.TeselagenAdaptor = {};

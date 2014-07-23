@@ -168,6 +168,9 @@ VE.Sequence = Backbone.Model.extend({
 	},
 
 
+
+
+
 });
 
 
@@ -224,6 +227,14 @@ VE.Sequence.fromJSON = function(json) {
 
 
 
+/**
+ * @param {String} gb Genbank file content as a string.
+ */
+VE.Sequence.fromGenbank = function(gb) {
+	var serSeq = VE.GenbankParser.genbankToSerialized(gb);
+	var sequence = this.deserialize(serSeq);
+	return sequence;
+};
 
 
 
