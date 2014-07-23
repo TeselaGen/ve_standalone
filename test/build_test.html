@@ -37,7 +37,8 @@
 		// fn();
 		var sequence = VE.Sequence.fromGenbank(sequenceGB);
 		var vectorEditor = new VE.VectorEditor({
-			renderTo: d3.select('body'),
+			// renderTo: d3.select('body'),
+			renderTo: $('body'),
 			sequence: sequence,
 			options: {
 				// showAminoAcidsRevCom: true,

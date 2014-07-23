@@ -21,19 +21,31 @@ VE.AnnotatePanel = Backbone.UI.Panel.extend({
 
 
 
+		// this.bodyEl.remove();
+
+		// this.el = this.backgroundEl.node();
+		// this.$el = $(this.el);
+
+		// this.phonyScrollContainer = new Backbone.UI.PhonyScrollContainer({
+		// 	renderTo: this.el,
+		// 	showPreview: this.showAnnotatePreview,
+		// })
+		// .render();
+
+
+
 		this.bodyEl.remove();
 
-		this.el = this.backgroundEl.node();
+		this.el = this.backgroundEl[0];
 		this.$el = $(this.el);
 
 		this.phonyScrollContainer = new Backbone.UI.PhonyScrollContainer({
 			renderTo: this.el,
 			showPreview: this.showAnnotatePreview,
 		})
-		.render()
-		;
+		.render();
 
-		// this.$el.on('keydown', this.ve.onKeyDown.bind(this.ve));
+
 
 		
 

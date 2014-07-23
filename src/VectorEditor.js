@@ -37,10 +37,17 @@ VE.VectorEditor = function(args) {
 		}
 	}
 
+	// var vePanel = ve.vePanel = this.vePanel = new VE.VePanel({
+	// 	parentEl: renderTo,
+	// 	ve: ve,
+	// }).render();
+
 	var vePanel = ve.vePanel = this.vePanel = new VE.VePanel({
 		parentEl: renderTo,
 		ve: ve,
 	}).render();
+
+
 
 	var annotateContainerArgs = {
 		phonyScrollContainer: vePanel.annotatePanel.phonyScrollContainer,
@@ -49,13 +56,13 @@ VE.VectorEditor = function(args) {
 	};
 
 	var pieContainerArgs = {
-		el: vePanel.vectorPanel.bodyEl.node(),
+		el: vePanel.vectorPanel.bodyEl[0],
 		model: sequence,
 		ve: ve,
 	};
 
 	var railContainerArgs = {
-		el: vePanel.vectorPanel.bodyEl.node(),
+		el: vePanel.vectorPanel.bodyEl[0],
 		model: sequence,
 		ve: ve,
 	};

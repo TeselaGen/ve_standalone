@@ -6390,10 +6390,58 @@ function onContextMenuHide() {
 
 
 })();;
+(function(){
 
 if(typeof Backbone.UI !== 'object') {
 	Backbone.UI = {};
 }
+
+
+
+// Backbone.UI.Panel = Backbone.View.extend({
+	
+
+// 	parentEl: null,
+// 	classed: null, // {}
+// 	title: null,
+
+// 	backgroundEl: null,
+// 	headerEl: null,
+// 	bodyEl: null,
+
+
+// 	initialize: function(elements) {
+// 		for(var x in elements) {
+// 			this[x] = elements[x];
+// 		}
+// 		if(!this.classed) { this.classed = {}; }
+// 	},
+
+// 	render: function() {
+// 		if(!this.backgroundEl) {
+// 			this.backgroundEl = this.parentEl.append('div')
+// 				.classed(this.classed)
+// 				.classed({ 'ui-background': true });
+// 		}
+// 		if(!this.headerEl) {
+// 			this.headerEl = this.backgroundEl.append('div')
+// 				.classed(this.classed)
+// 				.classed({ 'ui-header': true })
+// 				.text(this.title || "");
+// 		}
+// 		if(!this.bodyEl) {
+// 			this.bodyEl = this.backgroundEl.append('div')
+// 				.classed(this.classed)
+// 				.classed({ 'ui-body': true });
+// 		}
+
+// 		return this;
+// 	},
+
+
+// });
+
+
 
 
 
@@ -6417,31 +6465,53 @@ Backbone.UI.Panel = Backbone.View.extend({
 	},
 
 	render: function() {
+
+		var _classed = createJQueryAddClassString(this.classed);
+
 		if(!this.backgroundEl) {
-			this.backgroundEl = this.parentEl.append('div')
-				.classed(this.classed)
-				.classed({ 'ui-background': true });
+			this.backgroundEl = $(document.createElement('div'))
+				.addClass(_classed)
+				.addClass('ui-background')
+				.appendTo(this.parentEl);
 		}
 		if(!this.headerEl) {
-			this.headerEl = this.backgroundEl.append('div')
-				.classed(this.classed)
-				.classed({ 'ui-header': true })
-				.text(this.title || "");
+			this.headerEl = $(document.createElement('div'))
+				.addClass(_classed)
+				.addClass('ui-header')
+				.text(this.title || "")
+				.appendTo(this.backgroundEl);
 		}
 		if(!this.bodyEl) {
-			this.bodyEl = this.backgroundEl.append('div')
-				.classed(this.classed)
-				.classed({ 'ui-body': true });
+			this.bodyEl = $(document.createElement('div'))
+				.addClass(_classed)
+				.addClass('ui-body')
+				.appendTo(this.backgroundEl);
 		}
 
 		return this;
 	},
 
 
+
+
+
 });
 
 
 
+/**
+ * Might not be 100% accurate. I think if a classed key is set to false
+ * it should remove the class; however, this function just ignores those keys.
+ */
+function createJQueryAddClassString(classed) {
+	var a = [];
+	for(var x in classed) {
+		if(classed[x]) {
+			a.push(x);
+		}
+	}
+	return a.join(' ');
+}
 
 
 
@@ -6493,11 +6563,7 @@ Backbone.UI.Panel = Backbone.View.extend({
 
 
 
-
-
-
-
-;
+})();;
 (function(){
 
 if(typeof Backbone.UI !== 'object') {
@@ -9072,6 +9138,101 @@ VE.Annotation.prototype.validate = function() {
 ;
 
 
+// VE.VePanel = Backbone.View.extend({
+	
+// 	parentEl: null,
+// 	ve: null,
+
+// 	backgroundEl: null,
+
+// 	mainMenuBar: null,
+// 	mainToolBar: null,
+// 	veSubPanel: null,
+// 	vectorPanel: null,
+// 	annotatePanel: null,
+
+
+// 	initialize: function(elements) {
+// 		for(var x in elements) {
+// 			this[x] = elements[x];
+// 		}
+// 		this.ve.vePanel = this;
+// 	},
+
+
+
+// 	render: function() {
+		
+
+
+// 		if(!this.backgroundEl) {
+// 			this.backgroundEl = this.parentEl.append('div')
+// 				.classed({
+// 					've-panel-background': true
+// 				});
+// 		}
+
+// 		if(!this.mainMenuBar) {
+// 			this.mainMenuBar = new VE.MainMenuBar({
+// 				// parentEl: this.backgroundEl,
+// 				renderTo: this.backgroundEl.node(),
+// 				ve: this.ve,
+// 			});
+// 		}
+// 		this.mainMenuBar.render();
+
+
+// 		if(!this.veSubPanel) {
+// 			this.veSubPanel = this.backgroundEl.append('div')
+// 				.classed({
+// 					've-subpanel': true
+// 				});
+// 		}
+
+// 		if(!this.vectorPanel) {
+// 			this.vectorPanel = new VE.VectorPanel({
+// 				parentEl: this.veSubPanel,
+// 				classed: {
+// 					've-vector-panel': true,
+// 				},
+// 				ve: this.ve,
+// 				title: 'Map',
+// 			});
+// 		}
+// 		this.vectorPanel.render();
+
+// 		if(!this.annotatePanel) {
+// 			this.annotatePanel = new VE.AnnotatePanel({
+// 				parentEl: this.veSubPanel,
+// 				classed: {
+// 					've-annotate-panel': true,
+// 				},
+// 				ve: this.ve,
+// 				title: 'Sequence',
+// 				showAnnotatePreview: this.ve.showAnnotatePreview,
+// 			});
+// 		}
+// 		this.annotatePanel.render();
+
+
+		
+// 		$(this.backgroundEl.node()).attr('tabindex', "0")
+// 			.on('keydown',  this.ve.onKeyDown.bind(this.ve));
+
+
+// 		return this;
+// 	},
+
+
+
+// });
+
+
+
+
+
+
+
 VE.VePanel = Backbone.View.extend({
 	
 	parentEl: null,
@@ -9096,20 +9257,17 @@ VE.VePanel = Backbone.View.extend({
 
 
 	render: function() {
-		
-
+		var $parentEl = $(this.parentEl);
 
 		if(!this.backgroundEl) {
-			this.backgroundEl = this.parentEl.append('div')
-				.classed({
-					've-panel-background': true
-				});
+			this.backgroundEl = $(document.createElement('div'))
+				.addClass('ve-panel-background')
+				.appendTo($parentEl);
 		}
 
 		if(!this.mainMenuBar) {
 			this.mainMenuBar = new VE.MainMenuBar({
-				// parentEl: this.backgroundEl,
-				renderTo: this.backgroundEl.node(),
+				renderTo: this.backgroundEl[0],
 				ve: this.ve,
 			});
 		}
@@ -9117,10 +9275,10 @@ VE.VePanel = Backbone.View.extend({
 
 
 		if(!this.veSubPanel) {
-			this.veSubPanel = this.backgroundEl.append('div')
-				.classed({
-					've-subpanel': true
-				});
+			this.veSubPanel = $(document.createElement('div'))
+				.addClass('ve-subpanel')
+				.appendTo(this.backgroundEl);
+				
 		}
 
 		if(!this.vectorPanel) {
@@ -9150,7 +9308,7 @@ VE.VePanel = Backbone.View.extend({
 
 
 		
-		$(this.backgroundEl.node()).attr('tabindex', "0")
+		this.backgroundEl.attr('tabindex', "0")
 			.on('keydown',  this.ve.onKeyDown.bind(this.ve));
 
 
@@ -9160,10 +9318,6 @@ VE.VePanel = Backbone.View.extend({
 
 
 });
-
-
-
-
 
 
 
@@ -10041,19 +10195,31 @@ VE.AnnotatePanel = Backbone.UI.Panel.extend({
 
 
 
+		// this.bodyEl.remove();
+
+		// this.el = this.backgroundEl.node();
+		// this.$el = $(this.el);
+
+		// this.phonyScrollContainer = new Backbone.UI.PhonyScrollContainer({
+		// 	renderTo: this.el,
+		// 	showPreview: this.showAnnotatePreview,
+		// })
+		// .render();
+
+
+
 		this.bodyEl.remove();
 
-		this.el = this.backgroundEl.node();
+		this.el = this.backgroundEl[0];
 		this.$el = $(this.el);
 
 		this.phonyScrollContainer = new Backbone.UI.PhonyScrollContainer({
 			renderTo: this.el,
 			showPreview: this.showAnnotatePreview,
 		})
-		.render()
-		;
+		.render();
 
-		// this.$el.on('keydown', this.ve.onKeyDown.bind(this.ve));
+
 
 		
 
@@ -25482,179 +25648,6 @@ SequenceParser.on(VE.IoEvent.PARSE_SEQUENCE_FROM_FILE, function(file, cb) {
 
 
 })();;
-
-
-VE.TeselagenAdaptor = {};
-
-
-VE.TeselagenAdaptor.createSequence = function(paramsObj) {
-	var seqMan = paramsObj['sequenceManager'];
-
-	var alignments = paramsObj['alignments'];
-	var orfs = paramsObj['orfs'];
-	var cutSites = paramsObj['cutSites'];
-
-	var params = {
-		features: [],
-		alignments: [],
-		orfs: [],
-		cutSites: [],
-	};
-
-	params.name = seqMan.getName();
-	params.circular = seqMan.getCircular();
-
-	// copy the sequence
-	params.sequence = seqMan.getSequence().slice(0);
-
-	var features = seqMan.getFeatures();
-	for(var i=0;i<features.length;i++) {
-		var feat = features[i];
-		var annot = new VE.Annotation({
-			name: feat.getName(),
-			start: feat.getStart(),
-			end: feat.getEnd(),
-			strand: feat.getStrand(),
-			type: feat.getType(),
-		});
-		params.features.push(annot);
-	}
-
-
-
-	// TODO: alignments
-
-	if(Array.isArray(alignments)) {
-		if(alignments.length > 0) {
-			throw new Error("TODO");
-		}
-	}
-
-
-	if(Array.isArray(cutSites)) {
-		for(var i=0;i<cutSites.length;i++) {
-			var site = cutSites[i];
-			var enzyme = site.getRestrictionEnzyme();
-			var annot = new VE.Annotation({
-				start: site.getStart(),
-				end: site.getEnd(),
-				strand: site.getStrand(),
-				numCuts: site.getNumCuts(),
-				restrictionEnzyme: new Backbone.Model({
-					name: enzyme.getName(),
-					dsForward: enzyme.getDsForward(),
-					dsReverse: enzyme.getDsReverse(),
-				}),
-			});
-			params.cutSites.push(annot);
-		}
-	}
-
-	if(Array.isArray(orfs)) {
-		for(var i=0;i<orfs.length;i++) {
-			var orf = orfs[i];
-			var annot = new VE.Annotation({
-				start: orf.getStart(),
-				end: orf.getEnd(),
-				strand: orf.getStrand(),
-				startCodons: orf.getStartCodons(),
-				frame: orf.getFrame(),
-			});
-			params.orfs.push(annot);
-		}
-	}
-
-	var sequence = new VE.Sequence(params);
-	return sequence;
-};
-
-
-
-
-VE.TeselagenAdaptor.intertwineEvents_ExtToBackbone = function() {
-	var _fireEventArgs = Vede.application.fireEventArgs;
-
-	Vede.application.fireEventArgs = function() {
-		Backbone.trigger.apply(Backbone, arguments);
-		return _fireEventArgs.apply(Vede.application, arguments);
-	};
-
-	// Backbone.on('all', function() {console.log(arguments[0]);});
-
-
-	// Backbone.on(VE.VisibilityEvent.$getAllEvents().join(' '), function() {
-	// 	console.log(arguments);
-	// 	VE.activeVectorEditor.trigger.apply(VE.activeVectorEditor, arguments);
-	// });
-	
-	var _EventFunctionObject01 = function(eventName) {
-		this.eventName = eventName;
-	};
-	
-	_EventFunctionObject01.prototype.callback = function() {
-		var args = arguments[0];
-		args.unshift(this.eventName);
-		VE.activeVectorEditor.trigger.apply(VE.activeVectorEditor, args);
-	};
-	
-	for(var x in VE.VisibilityEvent) {
-		var eventName = VE.VisibilityEvent[x];
-		var functionObject = new _EventFunctionObject01(eventName);
-		Backbone.on(eventName, functionObject.callback.bind(functionObject));
-	}
-
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;
 (function(){
 
 
@@ -25694,10 +25687,17 @@ VE.VectorEditor = function(args) {
 		}
 	}
 
+	// var vePanel = ve.vePanel = this.vePanel = new VE.VePanel({
+	// 	parentEl: renderTo,
+	// 	ve: ve,
+	// }).render();
+
 	var vePanel = ve.vePanel = this.vePanel = new VE.VePanel({
 		parentEl: renderTo,
 		ve: ve,
 	}).render();
+
+
 
 	var annotateContainerArgs = {
 		phonyScrollContainer: vePanel.annotatePanel.phonyScrollContainer,
@@ -25706,13 +25706,13 @@ VE.VectorEditor = function(args) {
 	};
 
 	var pieContainerArgs = {
-		el: vePanel.vectorPanel.bodyEl.node(),
+		el: vePanel.vectorPanel.bodyEl[0],
 		model: sequence,
 		ve: ve,
 	};
 
 	var railContainerArgs = {
-		el: vePanel.vectorPanel.bodyEl.node(),
+		el: vePanel.vectorPanel.bodyEl[0],
 		model: sequence,
 		ve: ve,
 	};

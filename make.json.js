@@ -127,7 +127,7 @@
 		'src/parsers/SequenceParser.js',
 
 
-		'src/adaptors/TeselagenAdaptor.js',
+		// 'src/adaptors/TeselagenAdaptor.js',
 
 
 		'src/VectorEditor.js',
