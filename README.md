@@ -5,7 +5,7 @@ A Standalone Vector Editor
 
 How to use
 ------
-The following example create a VectorEditor instance of the genbank file `sequenceGB`.
+The following example creates a VectorEditor instance of the genbank file `sequenceGB`.
 
 ```js
 var sequence = VE.Sequence.fromGenbank(sequenceGB);
