@@ -15,33 +15,26 @@
 
 	
 	<script type="text/javascript" src="../data/062710_pJC9A_pLA.js"></script>
-	<script type="text/javascript" src="../data/alignment_test_sequence_model.js"></script>
-	<script type="text/javascript" src="../data/NT_187300.gb.js"></script>
+	<!-- <script type="text/javascript" src="../data/alignment_test_sequence_model.js"></script> -->
+	<!-- <script type="text/javascript" src="../data/NT_187300.gb.js"></script> -->
 
 
 </head>
 
 <body>
-	
-	
-	<script type="text/javascript" src="main.js"></script>
-
-
 	<script type="text/javascript">
-		var sequenceGB = NT_187300__GENBANK_CONTENT;
+		var sequenceGB = pJC9A_pLA;
 	</script>
-
-
 
 	<script type="text/javascript">
 		// fn();
-		var sequence = VE.Sequence.fromGenbank(sequenceGB);
+		var sequence = VE.Sequence.fromJSON(sequenceGB);
 		var vectorEditor = new VE.VectorEditor({
 			// renderTo: d3.select('body'),
 			renderTo: $('body'),
 			sequence: sequence,
 			options: {
-				// showAminoAcidsRevCom: true,
+				showAnnotatePreview: true,
 				// aminoAcidRevComFrames: [0, 1],
 			}
 		});
