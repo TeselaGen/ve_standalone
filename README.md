@@ -1,3 +1,6 @@
+# UNMAINTAINED: 
+See https://github.com/TeselaGen/openVectorEditor for an actively developed plasmid editor.
+
 ve_standalone
 =============
 
