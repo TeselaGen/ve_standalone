@@ -18,3 +18,8 @@ var vectorEditor = new VE.VectorEditor({
 });
 ```
 
+How To Develop 
+------
+```
+node app.js
+````

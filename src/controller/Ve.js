@@ -43,7 +43,7 @@ VE.Ve = function() {
 		// 	args.push(arguments[i]);
 		// }
 		for(var i=0;i<this.eventedObjects.length;i++) {
-			this.eventedObjects[i].trigger.apply(this.eventedObjects[i], arguments);
+			this.eventedObjects[i] && this.eventedObjects[i].trigger.apply(this.eventedObjects[i], arguments);
 		}
 	});
 	

@@ -227,11 +227,8 @@ VE.PieContainer = Backbone.View.extend({
 			width: width,
 			height: height,
 		});
-		var a = [];
-		var keys = Object.keys(this.parentSVG.node().getTransformToElement(this.pieSVG.node())).sort();
-		for(var i=0;i<keys.length;i++) {
-			a.push(transform[keys[i]]);
-		}
+		var a = [transform.a, transform.b,transform.c, transform.d,transform.e, transform.f];
+
 		this.parentSVG.attr({
 			transform: 'matrix('+a.join(',')+')',
 		});

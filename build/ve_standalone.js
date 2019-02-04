@@ -7833,7 +7833,7 @@ VE.Ve = function() {
 		
 		viewMode: 'pie', // 'pie', 'rail'
 
-		showAnnotatePreview: false,
+		showAnnotatePreview: true,
 
 		// aminoAcidFrames: [],
 

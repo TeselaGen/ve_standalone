@@ -67,13 +67,9 @@ var app = http.createServer(function(request, response) {
 		'.js':   "text/javascript"
 	};
 	
-	path.exists(filename, function(exists) {
-		if(!exists) {
-			response.writeHead(404, {"Content-Type": "text/plain"});
-			response.write("404 Not Found\n");
-			response.end();
-			return;
-		}
+	if (fs.existsSync(filename)) {
+
+
 		
 		fs.readFile(filename, "binary", function(err, file) {
 			if(err) {
@@ -90,7 +86,15 @@ var app = http.createServer(function(request, response) {
 			response.write(file, "binary");
 			response.end();
 		});
-	});
+	
+	} else {
+		
+		response.writeHead(404, {"Content-Type": "text/plain"});
+		response.write("404 Not Found\n");
+		response.end();
+		return;
+	
+	}
 }).listen(port);
 
 

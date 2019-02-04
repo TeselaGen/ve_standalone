@@ -356,11 +356,11 @@ VE.RailContainer = Backbone.View.extend({
 			width: width,
 			height: height,
 		});
-		var a = [];
-		var keys = Object.keys(this.parentSVG.node().getTransformToElement(this.railSVG.node())).sort();
-		for(var i=0;i<keys.length;i++) {
-			a.push(transform[keys[i]]);
-		}
+		var a = [transform.a, transform.b,transform.c, transform.d,transform.e, transform.f];
+		// var keys = Object.keys(this.parentSVG.node().getTransformToElement(this.railSVG.node())).sort();
+		// for(var i=0;i<keys.length;i++) {
+		// 	a.push(transform[keys[i]]);
+		// }
 		this.parentSVG.attr({
 			transform: 'matrix('+a.join(',')+')',
 		});

@@ -23,7 +23,15 @@
 		head.appendChild(link);
 	}
 
-
+debugger
+  if (!SVGElement.prototype.getTransformToElement) {
+    SVGElement.prototype.getTransformToElement = function(_element) {
+      return _element
+        .getScreenCTM()
+        .inverse()
+        .multiply(this.getScreenCTM());
+    };
+  }
 
 
 

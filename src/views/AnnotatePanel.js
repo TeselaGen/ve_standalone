@@ -9,7 +9,14 @@ VE.AnnotatePanel = Backbone.UI.Panel.extend({
 	phonyScrollContainer: null,
 
 	initialize: function(elements) {
-		
+		if (!SVGElement.prototype.getTransformToElement) {
+			SVGElement.prototype.getTransformToElement = function(_element) {
+				return _element
+					.getScreenCTM()
+					.inverse()
+					.multiply(this.getScreenCTM());
+			};
+		}
 
 		
 		Backbone.UI.Panel.prototype.initialize.call(this, elements);
