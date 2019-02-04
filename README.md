@@ -23,3 +23,5 @@ How To Develop
 ```
 node app.js
 ````
+
+go to http://localhost:8888/index.html
